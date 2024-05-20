@@ -24,7 +24,7 @@ spectrogram_sequence = SpectrogramSequence(
 
 act, det = predict(model, spectrogram_sequence)
 
-f_measure = mir_eval.beat.f_measure(v.beats.times, v.beats.times)
+f_measure = mir_eval.beat.f_measure(v.beats.times, det[k]['beats'])
 print("mir_eval f_measure: ", f_measure)
 
 f_measure_helper = EvaluationHelperFactory.create_evaluation_helper('f_measure')
