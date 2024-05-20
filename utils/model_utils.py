@@ -2,7 +2,7 @@ import os
 import sys
 import keras.backend as K
 from keras import Model
-from keras.callbacks import ModelCheckpoint, ReduceLROnPlateau, EarlyStopping
+from keras.callbacks import ModelCheckpoint, ReduceLROnPlateau, EarlyStopping, CSVLogger
 from keras.layers import (
     Activation,
     Dense,
@@ -16,7 +16,7 @@ from keras.optimizers import Adam
 from matplotlib import pyplot as plt
 from classes.tcn import TCN
 from utils.utils import get_detected_beats_dbn
-from constants.constants import INPUT_SHAPE, ACTIVATION_1, NUM_FILTERS_TCN_1, KERNEL_SIZE_TCN_1, NUM_FILTERS_2, \
+from constants.constants import CSV_LOSSES_PATH, INPUT_SHAPE, ACTIVATION_1, NUM_FILTERS_TCN_1, KERNEL_SIZE_TCN_1, NUM_FILTERS_2, \
     DROPOUT_RATE_2, NUM_DILATIONS_TCN_2, NUM_EPOCHS
 import io
 import numpy as np
@@ -103,11 +103,12 @@ def train_model(model, train_data, test_data=None, model_name='', save_model=Fal
     lr = ReduceLROnPlateau(monitor='loss', factor=0.2, patience=10, verbose=1, mode='auto', min_delta=1e-3, cooldown=0,
                            min_lr=1e-7)
     es = EarlyStopping(monitor='loss', min_delta=1e-4, patience=50, verbose=0)
+    csv_logger = CSVLogger(CSV_LOSSES_PATH + '/' + model_name + '.csv', append=True, separator=';')
 
     if save_model and model_save_path != '':
-        callbacks = [mc, lr, es]
+        callbacks = [mc, lr, es, csv_logger]
     else:
-        callbacks = [lr, es]
+        callbacks = [lr, es, csv_logger]
 
     if test_data is not None:
         validation_data = test_data
