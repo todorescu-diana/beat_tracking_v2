@@ -23,8 +23,8 @@ class EvaluationHelperBase(ABC):
         metric_components = self.metric_components()
 
         for track_name in detections_dict.keys():
-            detections = detections_dict[track_name]
-            annotations = annotations_dict[track_name]  # Get annotations for the corresponding track name
+            detections = detections_dict[track_name]['beats']
+            annotations = annotations_dict[track_name]['beats']  # Get annotations for the corresponding track name
 
             if annotations is None:
                 continue  # Skip if annotations are missing for this track

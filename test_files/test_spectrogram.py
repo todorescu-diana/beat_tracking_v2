@@ -1,3 +1,5 @@
+import sys
+sys.path.append('')
 import logging
 from classes.audio_track import AudioTrack
 from classes.spectrogram_sequence import SpectrogramSequence
@@ -20,13 +22,14 @@ spectrogram_sequence = SpectrogramSequence(
     data_sequence_pre_processor=pre_processor,pad_frames=2
 )
 
-# pre_processor.plot_spectrogram(spectrogram, duration=5)
+spectrogram = pre_processor.process(chericherilady.audio_path)
+pre_processor.plot_spectrogram(spectrogram, duration=5)
 
 print("Spectrogram Shape: ", spectrogram_sequence[0][0].shape)
 
 model = load_model('')
 
 act, det = predict(model, spectrogram_sequence)
-# print(det)
+
 play_audio_with_clicktrack(chericherilady, det['test_track']['beats'])
 
