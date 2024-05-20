@@ -1,3 +1,5 @@
+import sys
+sys.path.append('')
 from sklearn.model_selection import train_test_split
 from classes.data_sequence import DataSequence
 from classes.spectrogram_processor import SpectrogramProcessor

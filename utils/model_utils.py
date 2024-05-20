@@ -2,7 +2,7 @@ import os
 import sys
 import keras.backend as K
 from keras import Model
-from keras.callbacks import ReduceLROnPlateau, EarlyStopping
+from keras.callbacks import ModelCheckpoint, ReduceLROnPlateau, EarlyStopping
 from keras.layers import (
     Activation,
     Dense,
@@ -14,8 +14,6 @@ from keras.layers import (
 )
 from keras.optimizers import Adam
 from matplotlib import pyplot as plt
-
-from classes.save_best_loss_callback import SaveBestLoss
 from classes.tcn import TCN
 from utils.utils import get_detected_beats_dbn
 from constants.constants import INPUT_SHAPE, ACTIVATION_1, NUM_FILTERS_TCN_1, KERNEL_SIZE_TCN_1, NUM_FILTERS_2, \
@@ -101,13 +99,7 @@ def compile_model(model, summary=False, model_name='', summary_save_path=''):
 def train_model(model, train_data, test_data=None, model_name='', save_model=False, model_save_path='', epochs=NUM_EPOCHS, plot_save=False, plot_save_path=''):
     # define callbacks
 
-    mc = SaveBestLoss(filepath=os.path.join(model_save_path + '/' + model_name + '_best.h5'), 
-                    txt_filepath=os.path.join(model_save_path + '/best_losses' + model_name + '.txt'), 
-                    monitor='loss', 
-                    save_best_only=True, 
-                    verbose=1)
-
-    # mc = ModelCheckpoint(model_save_path + '/' + model_name + '_best.h5', monitor='loss', save_best_only=True, verbose=0)
+    mc = ModelCheckpoint(model_save_path + '/' + model_name + '_best.h5', monitor='loss', save_best_only=True, verbose=0)
     lr = ReduceLROnPlateau(monitor='loss', factor=0.2, patience=10, verbose=1, mode='auto', min_delta=1e-3, cooldown=0,
                            min_lr=1e-7)
     es = EarlyStopping(monitor='loss', min_delta=1e-4, patience=50, verbose=0)
