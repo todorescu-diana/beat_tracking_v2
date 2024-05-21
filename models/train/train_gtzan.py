@@ -15,7 +15,7 @@ with tf.device('/GPU:0'):
     dataset_name = VALID_DATASET_NAMES[2]   # gtzan
     pre_processor = SpectrogramProcessor()
     dataset_tracks = load_dataset(dataset_name, gtzan=True)
-    model_name = 'gtzan_v2_fixed'
+    model_name = 'gtzan_v2_fixed_final'
 
     if dataset_tracks is not None:
         train_files, test_files = train_test_split(list(dataset_tracks.keys()), test_size=0.2, random_state=1234)
@@ -30,7 +30,7 @@ with tf.device('/GPU:0'):
                 data_sequence_pre_processor=pre_processor,
                 pad_frames=2
             )
-        train.widen_beat_targets()
+        test.widen_beat_targets()
 
         model = build_model()
         compile_model(model, summary=True, model_name=model_name, summary_save_path=SUMMARY_SAVE_PATH)
