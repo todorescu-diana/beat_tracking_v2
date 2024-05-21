@@ -26,11 +26,14 @@ class DataSequence(Sequence):
                 data_sequence_beats = t.beats.times
                 # compute features first to be able to quantize beats
                 data_sequence_spectrogram = data_sequence_pre_processor.process(t.audio_path)
-                self.spectrogram[data_sequence_key] = data_sequence_spectrogram
+                if len(data_sequence_spectrogram):
+                  self.spectrogram[data_sequence_key] = data_sequence_spectrogram
 
-                beat_positions_frames = beats_to_frame_indices(data_sequence_beats)
-                quantized_beat_frames = one_hot_encode_beats(beat_positions_frames, data_sequence_spectrogram.shape[0])
-                self.beats[data_sequence_key] = quantized_beat_frames
+                  beat_positions_frames = beats_to_frame_indices(data_sequence_beats)
+                  quantized_beat_frames = one_hot_encode_beats(beat_positions_frames, data_sequence_spectrogram.shape[0])
+                  self.beats[data_sequence_key] = quantized_beat_frames
+                else:
+                  continue
             else:
                 # no beats found, skip this file
                 print(f'\r{data_sequence_key} has no beat information, skipping\n')

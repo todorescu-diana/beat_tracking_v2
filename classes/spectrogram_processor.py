@@ -3,7 +3,7 @@ import librosa
 import matplotlib.pyplot as plt
 import librosa.feature
 from constants.constants import FPS, NUM_BINS, FIXED_SAMPLE_RATE, FFT_SIZE, F_MIN, F_MAX
-
+import os
 
 class SpectrogramProcessor:
     def __init__(self, fps=FPS, num_bins=NUM_BINS, target_sample_rate=FIXED_SAMPLE_RATE, n_fft=FFT_SIZE):
@@ -16,8 +16,22 @@ class SpectrogramProcessor:
                                                fmin=F_MIN, fmax=F_MAX)
 
     def process(self, audio_path):
+      try:
+        # Split the file path into directory, base name, and extension
+        directory, file_name = os.path.split(audio_path)
+        base_name, extension = os.path.splitext(file_name)
+        
+        # Replace "." before extension with "_"
+        new_base_name = base_name.replace("_", ".")
+        
+        # Construct the new file path
+        new_file_path = os.path.join(directory, new_base_name + extension)
+        
+        # Rename the file
+        os.rename(audio_path, new_file_path)
+
         # load audio file using librosa
-        y, original_sr = librosa.load(audio_path)
+        y, original_sr = librosa.load(new_file_path)
 
         # resample to the target sample rate
         y_resampled = librosa.resample(y, orig_sr=original_sr, target_sr=self.sample_rate)
@@ -34,6 +48,10 @@ class SpectrogramProcessor:
         spectrogram_transposed = spectrogram_db.T
 
         return spectrogram_transposed
+      except Exception as e:
+        print("Exception occurred: ", e)
+        return []
+      
 
     def plot_spectrogram(self, spectrogram, duration=None, cmap='gist_heat'):
         # calculate number of frames to display based on duration

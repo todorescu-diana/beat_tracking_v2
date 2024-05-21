@@ -1,3 +1,6 @@
+import sys
+sys.path.append('')
+
 from sklearn.model_selection import train_test_split
 from classes.data_sequence import DataSequence
 from classes.spectrogram_processor import SpectrogramProcessor
@@ -12,7 +15,7 @@ with tf.device('/GPU:0'):
     dataset_name = VALID_DATASET_NAMES[2]   # gtzan
     pre_processor = SpectrogramProcessor()
     dataset_tracks = load_dataset(dataset_name, gtzan=True)
-    model_name = 'gtzan_v2'
+    model_name = 'gtzan_v2_fixed'
 
     if dataset_tracks is not None:
         train_files, test_files = train_test_split(list(dataset_tracks.keys()), test_size=0.2, random_state=1234)

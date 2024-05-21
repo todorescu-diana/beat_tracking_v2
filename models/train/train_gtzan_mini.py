@@ -1,5 +1,6 @@
 import sys
 sys.path.append('')
+import numpy as np
 from sklearn.model_selection import train_test_split
 from classes.data_sequence import DataSequence
 from classes.spectrogram_processor import SpectrogramProcessor
@@ -15,7 +16,6 @@ with tf.device('/GPU:0'):
     tracks = gtzan.load_tracks()
     pre_processor = SpectrogramProcessor()
     model_name = 'gtzan_mini_v2'
-
     dataset_tracks = tracks
     if dataset_tracks is not None:
         train_files, test_files = train_test_split(list(dataset_tracks.keys()), test_size=0.2, random_state=1234)
@@ -25,6 +25,7 @@ with tf.device('/GPU:0'):
                 pad_frames=2
             )
         train.widen_beat_targets()
+        
         test = DataSequence(
                 data_sequence_tracks={k: v for k, v in dataset_tracks.items() if k in test_files},
                 data_sequence_pre_processor=pre_processor,

@@ -75,7 +75,7 @@ def build_model(input_shape=INPUT_SHAPE, num_conv_filters=NUM_FILTERS_2, activat
 
 
 def compile_model(model, summary=False, model_name='', summary_save_path=''):
-    optimizer = Adam(learning_rate=0.002, clipnorm=0.5)
+    optimizer = Adam(learning_rate=0.002)
 
     model.compile(optimizer=optimizer,
                   loss=[K.binary_crossentropy],

@@ -70,8 +70,8 @@ def k_fold_cross_validation(dataset_tracks, n_splits=NUM_FOLDS, epochs=NUM_EPOCH
                 )
                 # predict for metrics
                 _, detections = predict(model, spectrogram_sequence)
-                beat_detections = {k: v['beats'] for k, v in detections.items()}
-                beat_annotations = {k: v.beats.times for k, v in dataset_tracks.items() if v.beats is not None}
+                beat_detections = detections
+                beat_annotations = {k: {'beats': v.beats.times} for k, v in dataset_tracks.items() if v.beats is not None}
 
                 # calculate remaining / extra metrics
                 cemgil_dataset_mean = cemgil_helper.calculate_mean_metric(beat_detections, beat_annotations)
