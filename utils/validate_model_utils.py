@@ -16,7 +16,7 @@ def k_fold_cross_validation(dataset_tracks, n_splits=NUM_FOLDS, epochs=NUM_EPOCH
 
         if len(dataset_tracks_keys):
             # Initialize KFold cross-validator
-            kf = KFold(n_splits=n_splits, shuffle=True, random_state=1234)
+            kf = KFold(n_splits=n_splits, shuffle=True, random_state=42)
 
             # Initialize lists to store evaluation metrics
             accuracy_scores = []

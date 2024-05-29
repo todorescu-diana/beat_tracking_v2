@@ -18,7 +18,7 @@ with tf.device('/GPU:0'):
     model_name = 'gtzan_mini_v2'
     dataset_tracks = tracks
     if dataset_tracks is not None:
-        train_files, test_files = train_test_split(list(dataset_tracks.keys()), test_size=0.2, random_state=1234)
+        train_files, test_files = train_test_split(list(dataset_tracks.keys()), test_size=0.2, random_state=42)
         train = DataSequence(
                 data_sequence_tracks={k: v for k, v in dataset_tracks.items() if k in train_files},
                 data_sequence_pre_processor=pre_processor,
@@ -31,7 +31,7 @@ with tf.device('/GPU:0'):
                 data_sequence_pre_processor=pre_processor,
                 pad_frames=2
             )
-        train.widen_beat_targets()
+        test.widen_beat_targets()
 
         model = build_model()
         compile_model(model, summary=True, model_name=model_name, summary_save_path=SUMMARY_SAVE_PATH)

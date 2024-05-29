@@ -88,3 +88,8 @@ MODEL_SAVE_PATH = ''
 PLOT_SAVE_PATH = ''
 RESULTS_DIR_PATH = ''
 CSV_LOSSES_PATH = ''
+
+plot_colors = {
+    'train': 'darkslategray',
+    'val': 'firebrick'
+}

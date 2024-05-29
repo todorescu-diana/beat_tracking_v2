@@ -23,14 +23,14 @@ gtzan_track = gtzan_tracks['blues.00001']
 print("GTZAN TRACK: ", gtzan_track.audio_path)
 
 # DAGSTUHL CHOIR
-dagstuhl_choir_tracks = load_dataset('dagstuhl_choir', strict=True)
+dagstuhl_choir_tracks = load_dataset('dagstuhl_choir')
 dagstuhl_choir_tracks_filtered = {name: track for name, track in dagstuhl_choir_tracks.items() if track.beats.times is not None}
 
 dagstuhl_choir_track = dagstuhl_choir_tracks_filtered['DCS_LI_QuartetB_Take04_Stereo_STM']
 print("DAGSTUHL CHOIR TRACK: ", dagstuhl_choir_track.audio_path)
 
 # beatboxset
-beatboxset_tracks = load_dataset('beatboxset', strict=True)
+beatboxset_tracks = load_dataset('beatboxset')
 
 beatboxset_track = beatboxset_tracks['battleclip_daq']
 print("BEATBOXSET TRACK: ", beatboxset_track.audio_path)
@@ -55,7 +55,7 @@ print("TINY_AAM TRACK: ", tiny_aam_track.audio_path)
 
 tracks = tiny_aam_tracks
 
-train_files, test_files = train_test_split(list(tracks.keys()), test_size=0.2, random_state=1234)
+train_files, test_files = train_test_split(list(tracks.keys()), test_size=0.2, random_state=42)
 pre_processor = SpectrogramProcessor()
 dagstuhl_choir_spectrogram = pre_processor.process(dagstuhl_choir_track.audio_path)
 pre_processor.plot_spectrogram(dagstuhl_choir_spectrogram)

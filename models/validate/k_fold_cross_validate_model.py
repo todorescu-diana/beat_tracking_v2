@@ -1,6 +1,6 @@
 from constants.constants import RESULTS_DIR_PATH, VALID_DATASET_NAMES
 from classes.spectrogram_processor import SpectrogramProcessor
-from utils.dataset_utils import load_dataset
+from utils.dataset_utils import get_load_dataset_params, load_dataset
 from utils.validate_model_utils import k_fold_cross_validation
 import tensorflow as tf
 import logging
@@ -10,17 +10,8 @@ tf.get_logger().setLevel(logging.ERROR)
 for dataset_name in VALID_DATASET_NAMES:
     pre_processor = SpectrogramProcessor()
 
-    strict = False
-    gtzan = False
-    tiny_aam = False
-
-    if dataset_name == 'dagstuhl_choir' or dataset_name == 'beatboxset':
-        strict = True
-    elif dataset_name == 'gtzan':
-        gtzan = True
-    elif dataset_name == 'tiny_aam':
-        tiny_aam = True
-    dataset_tracks = load_dataset(dataset_name, strict, gtzan, tiny_aam)
+    replace_dots_with_underline, tiny_aam = get_load_dataset_params(dataset_name)
+    dataset_tracks = load_dataset(dataset_name, replace_dots_with_underline, tiny_aam)
 
     if dataset_tracks is not None:
         k_fold_cross_validation(dataset_tracks, dataset_name, results_dir_path=RESULTS_DIR_PATH)
@@ -30,17 +21,8 @@ datasets_merged = {}
 for dataset_name in VALID_DATASET_NAMES:
     pre_processor = SpectrogramProcessor()
 
-    strict = False
-    gtzan = False
-    tiny_aam = False
-
-    if dataset_name == 'dagstuhl_choir' or dataset_name == 'beatboxset':
-        strict = True
-    elif dataset_name == 'gtzan':
-        gtzan = True
-    elif dataset_name == 'tiny_aam':
-        tiny_aam = True
-    dataset_tracks = load_dataset(dataset_name, strict, gtzan, tiny_aam)
+    replace_dots_with_underline, tiny_aam = get_load_dataset_params(dataset_name)
+    dataset_tracks = load_dataset(dataset_name, replace_dots_with_underline, tiny_aam)
     datasets_merged.update(dataset_tracks)
 
 if datasets_merged is not None:

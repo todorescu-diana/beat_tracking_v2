@@ -1,4 +1,3 @@
-import os
 import sys
 import keras.backend as K
 from keras import Model
@@ -17,7 +16,7 @@ from matplotlib import pyplot as plt
 from classes.tcn import TCN
 from utils.utils import get_detected_beats_dbn
 from constants.constants import CSV_LOSSES_PATH, INPUT_SHAPE, ACTIVATION_1, NUM_FILTERS_TCN_1, KERNEL_SIZE_TCN_1, NUM_FILTERS_2, \
-    DROPOUT_RATE_2, NUM_DILATIONS_TCN_2, NUM_EPOCHS
+    DROPOUT_RATE_2, NUM_DILATIONS_TCN_2, NUM_EPOCHS, plot_colors
 import io
 import numpy as np
 from contextlib import redirect_stdout
@@ -139,11 +138,11 @@ def plot_metrics(history, metric, validation_included, model_name='', plot_save=
 
     plt.figure(figsize=(12, 6))
 
-    plt.plot(history.history[metric])
+    plt.plot(history.history[metric], color=plot_colors['train'])
     if validation_included:
-        plt.plot(history.history['val_' + metric])
+        plt.plot(history.history['val_' + metric], color=plot_colors['val'])
     plt.title('Model ' + model_name + ' ' + metric)
-    plt.xlabel('Epoch')
+    plt.xlabel('epoch')
     plt.ylabel(metric)
     if validation_included:
         plt.legend(['train', 'val'], loc='upper right')
