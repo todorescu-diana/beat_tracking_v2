@@ -35,7 +35,7 @@ with tf.device('/GPU:0'):
 
         model = build_model()
         compile_model(model, summary=True, model_name=model_name, summary_save_path=SUMMARY_SAVE_PATH)
-        train_model(model, epochs=4, train_data=train, test_data=test, save_model=True, model_name=model_name, model_save_path=MODEL_SAVE_PATH, plot_save=True, plot_save_path=PLOT_SAVE_PATH)
+        train_model(model, train_data=train, test_data=test, save_model=True, model_name=model_name, model_save_path=MODEL_SAVE_PATH, plot_save=True, plot_save_path=PLOT_SAVE_PATH)
 
 #     # datasets - merged
 #     datasets_merged = {}
