@@ -3,7 +3,7 @@ import librosa
 import matplotlib.pyplot as plt
 import librosa.feature
 from constants.constants import FPS, NUM_BINS, FIXED_SAMPLE_RATE, FFT_SIZE, F_MIN, F_MAX
-import os
+
 
 class SpectrogramProcessor:
     def __init__(self, fps=FPS, num_bins=NUM_BINS, target_sample_rate=FIXED_SAMPLE_RATE, n_fft=FFT_SIZE):
@@ -13,25 +13,12 @@ class SpectrogramProcessor:
         self.n_fft = n_fft
         self.hop_length = int(self.sample_rate / self.fps)
         self.filter_bank = librosa.filters.mel(sr=self.sample_rate, n_fft=self.n_fft, n_mels=self.num_bins,
-                                               fmin=F_MIN, fmax=F_MAX)
+                                                fmin=F_MIN, fmax=F_MAX)
 
     def process(self, audio_path):
       try:
-        # Split the file path into directory, base name, and extension
-        directory, file_name = os.path.split(audio_path)
-        base_name, extension = os.path.splitext(file_name)
-        
-        # Replace "." before extension with "_"
-        new_base_name = base_name.replace("_", ".")
-        
-        # Construct the new file path
-        new_file_path = os.path.join(directory, new_base_name + extension)
-        
-        # Rename the file
-        os.rename(audio_path, new_file_path)
-
         # load audio file using librosa
-        y, original_sr = librosa.load(new_file_path)
+        y, original_sr = librosa.load(audio_path)
 
         # resample to the target sample rate
         y_resampled = librosa.resample(y, orig_sr=original_sr, target_sr=self.sample_rate)
@@ -62,14 +49,8 @@ class SpectrogramProcessor:
         # determine the number of bins from the shape of the spectrogram
         num_bins = spectrogram.shape[1]
 
-        # calculate the frequencies corresponding to the Mel filter bins
-        frequencies = librosa.mel_frequencies(n_mels=num_bins, fmin=F_MIN, fmax=F_MAX)
-
         # determine y-axis tick positions in increments of 20
         y_tick_positions = np.arange(0, num_bins, int(num_bins / 5))  # Adjusted to show 5 ticks
-
-        # get the corresponding frequencies for the y-axis ticks
-        y_tick_frequencies = frequencies[y_tick_positions]
 
         # plot spectrogram
         plt.figure(figsize=(10, 4))

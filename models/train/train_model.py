@@ -10,7 +10,7 @@ import tensorflow as tf
 
 with tf.device('/GPU:0'):
     # datasets - separate
-    dataset_name = VALID_DATASET_NAMES[2]   # gtzan
+    dataset_name = VALID_DATASET_NAMES[0]
 
     replace_dots_with_underline, tiny_aam = get_load_dataset_params(dataset_name)
     
@@ -19,7 +19,8 @@ with tf.device('/GPU:0'):
     model_name = 'trained_' + dataset_name + '_v2'
 
     if dataset_tracks is not None:
-        train_files, test_files = train_test_split(list(dataset_tracks.keys()), test_size=0.2, random_state=42)
+        train_files, test_files = train_test_split(list(dataset_tracks.keys()), test_size=0.2, random_state=1234)
+
         train = DataSequence(
                 data_sequence_tracks={k: v for k, v in dataset_tracks.items() if k in train_files},
                 data_sequence_pre_processor=pre_processor,

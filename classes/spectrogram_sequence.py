@@ -11,11 +11,9 @@ class SpectrogramSequence(keras.utils.Sequence):
         self.pad_frames = pad_frames
 
         for i, key in enumerate(data_sequence_tracks):
-            print(key)
             sys.stderr.write(f'\rProcessing track {i + 1}/{len(data_sequence_tracks)}: {key + " " * 20}')
             sys.stderr.flush()
             track = data_sequence_tracks[key]
-            print("TRACK: ", track)
             spectrogram = data_sequence_pre_processor.process(track.audio_path)
             self.spectrogram[key] = spectrogram
             self.ids.append(key)

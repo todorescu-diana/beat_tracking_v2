@@ -12,7 +12,6 @@ gtzan = mirdata.initialize('gtzan_genre', version='mini')
 tracks = gtzan.load_tracks()
 track = list(tracks.items())[0]
 k, v = track
-print("TRACK: ", track)
 
 model = load_model('')
 
