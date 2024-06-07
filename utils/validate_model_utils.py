@@ -1,22 +1,22 @@
 import numpy as np
 from sklearn.model_selection import KFold
-
 from classes.data_sequence import DataSequence
 from classes.spectrogram_processor import SpectrogramProcessor
 from classes.spectrogram_sequence import SpectrogramSequence
-from constants.constants import NUM_FOLDS, PAD_FRAMES, NUM_EPOCHS
+from constants.constants import MODEL_SAVE_PATH, NUM_FOLDS, PAD_FRAMES, NUM_EPOCHS, PLOT_SAVE_PATH, SUMMARY_SAVE_PATH
 from evaluation.classes.EvaluationHelperFactory import EvaluationHelperFactory
 from utils.model_utils import build_model, compile_model, train_model, predict
 
 
 def k_fold_cross_validation(dataset_tracks, n_splits=NUM_FOLDS, epochs=NUM_EPOCHS, dataset_name='', results_dir_path=''):
     print(f"Performing k-fold-cross-validation on {dataset_name.upper()} dataset")
+    total_valid_dataset_tracks = 0
     if dataset_tracks is not None:
         dataset_tracks_keys = list(dataset_tracks.keys())
 
         if len(dataset_tracks_keys):
             # Initialize KFold cross-validator
-            kf = KFold(n_splits=n_splits, shuffle=True, random_state=42)
+            kf = KFold(n_splits=2, shuffle=True, random_state=1234)
 
             # Initialize lists to store evaluation metrics
             accuracy_scores = []
@@ -41,20 +41,20 @@ def k_fold_cross_validation(dataset_tracks, n_splits=NUM_FOLDS, epochs=NUM_EPOCH
                 train = DataSequence(
                     data_sequence_tracks={k: v for k, v in dataset_tracks.items() if k in train_files},
                     data_sequence_pre_processor=pre_processor,
-                    data_sequence_pad_frames=PAD_FRAMES
+                    pad_frames=PAD_FRAMES
                 )
                 train.widen_beat_targets()
 
                 test = DataSequence(
                     data_sequence_tracks={k: v for k, v in dataset_tracks.items() if k in test_files},
                     data_sequence_pre_processor=pre_processor,
-                    data_sequence_pad_frames=PAD_FRAMES
+                    pad_frames=PAD_FRAMES
                 )
                 test.widen_beat_targets()
 
                 model = build_model()
-                compile_model(model)
-                history = train_model(model, train_data=train, test_data=test, epochs=epochs)
+                compile_model(model, summary=True, model_name=dataset_name + f'_fold{fold_idx}')
+                history = train_model(model, epochs=epochs, train_data=train, test_data=test, model_name=dataset_name + f'_fold{fold_idx}', plot_save=True, plot_save_path=PLOT_SAVE_PATH)
 
                 # Store training history
                 train_accuracy_scores.append(history.history['binary_accuracy'])
@@ -68,6 +68,9 @@ def k_fold_cross_validation(dataset_tracks, n_splits=NUM_FOLDS, epochs=NUM_EPOCH
                     data_sequence_pre_processor=pre_processor,
                     data_sequence_pad_frames=2
                 )
+
+                total_valid_dataset_tracks = len(spectrogram_sequence)
+
                 # predict for metrics
                 _, detections = predict(model, spectrogram_sequence)
                 beat_detections = detections
@@ -90,34 +93,40 @@ def k_fold_cross_validation(dataset_tracks, n_splits=NUM_FOLDS, epochs=NUM_EPOCH
             avg_accuracy = np.mean(accuracy_scores)
             avg_loss = np.mean(loss_scores)
 
-            num_tracks = len(dataset_tracks)
+            num_tracks = total_valid_dataset_tracks
+            if len(cemgil_scores) == len(continuity_scores) == len(f_measure_scores):
+                count = len(cemgil_scores)
 
-            cemgil_metric_components = cemgil_helper.metric_components()
-            continuity_metric_components = continuity_helper.metric_components()
-            f_measure_metric_components = f_measure_helper.metric_components()
+                if num_tracks:
+                    sum_cemgil = {}
+                    sum_continuity = {}
+                    sum_f_measure = {}
+                    for fold_idx in range(2):
+                        for key, value in cemgil_scores[fold_idx].items():
+                            if key in sum_cemgil:
+                                sum_cemgil[key] += value
+                            else:
+                                sum_cemgil[key] = value
+                        # Calculate the mean for each key
+                        mean_cemgil = {key: round(sum_value / count, 2) for key, sum_value in sum_cemgil.items()}
+                        for key, value in continuity_scores[fold_idx].items():
+                            if key in sum_continuity:
+                                sum_continuity[key] += value
+                            else:
+                                sum_continuity[key] = value
+                        mean_continuity = {key: round(sum_value / count, 2) for key, sum_value in sum_continuity.items()}
+                        for key, value in f_measure_scores[fold_idx].items():
+                            if key in sum_f_measure:
+                                sum_f_measure[key] += value
+                            else:
+                                sum_f_measure[key] = value
+                        mean_f_measure = {key: round(sum_value / count, 2) for key, sum_value in sum_f_measure.items()}
 
-            for fold_idx in range(n_splits):
-                for component in cemgil_metric_components:
-                    cemgil_scores[fold_idx][component] /= num_tracks
-                    cemgil_scores[fold_idx][component] = round(cemgil_scores[fold_idx][component], 2)
-                for component in continuity_metric_components:
-                    continuity_scores[fold_idx][component] /= num_tracks
-                    continuity_scores[fold_idx][component] = round(continuity_scores[fold_idx][component], 2)
-                for component in f_measure_metric_components:
-                    f_measure_scores[fold_idx][component] /= num_tracks
-                    f_measure_scores[fold_idx][component] = round(f_measure_scores[fold_idx][component], 2)
-            print(f"{dataset_name.upper()}:")
-            print(f"\t\t\t\t{dataset_name.upper()} Average Binary Accuracy:", avg_accuracy)
-            print(f"\t\t\t\t{dataset_name.upper()} Average Loss:", avg_loss)
-            print(f"\t\t\t\t{dataset_name.upper()} Average Cemgil Accuracy:", cemgil_scores)
-            print(f"\t\t\t\t{dataset_name.upper()} Average Continuity Score:", continuity_scores)
-            print(f"\t\t\t\t{dataset_name.upper()} Average F-Measure:", f_measure_scores)
-
-            with open(results_dir_path + "/" + dataset_name.upper() + ".txt", "w") as file:
-                file.write(f"{dataset_name.upper()}:\n")
-                file.write(f"\t\t\t\t{dataset_name.upper()} Average Binary Accuracy: {avg_accuracy}\n")
-                file.write(f"\t\t\t\t{dataset_name.upper()} Average Loss: {avg_loss}\n")
-                file.write(f"\t\t\t\t{dataset_name.upper()} Average Cemgil Accuracy: {cemgil_scores}\n")
-                file.write(f"\t\t\t\t{dataset_name.upper()} Average Continuity Score: {continuity_scores}\n")
-                file.write(f"\t\t\t\t{dataset_name.upper()} Average F-Measure: {f_measure_scores}\n")
+                    with open(results_dir_path + "/" + dataset_name.upper() + ".txt", "w") as file:
+                        file.write(f"{dataset_name.upper()}:\n")
+                        file.write(f"\tAverage Binary Accuracy: {avg_accuracy}\n")
+                        file.write(f"\tAverage Loss: {avg_loss}\n")
+                        file.write(f"\tAverage Cemgil Accuracy: {mean_cemgil}\n")
+                        file.write(f"\tAverage Continuity Score: {mean_continuity}\n")
+                        file.write(f"\tAverage F-Measure: {mean_f_measure}\n")
 

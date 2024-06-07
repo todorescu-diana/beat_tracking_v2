@@ -9,7 +9,8 @@ from keras.layers import (
     Conv2D,
     MaxPooling2D,
     Reshape,
-    Dropout
+    Dropout,
+    BatchNormalization
 )
 from keras.optimizers import Adam
 from matplotlib import pyplot as plt
@@ -37,18 +38,21 @@ def build_model(input_shape=INPUT_SHAPE, num_conv_filters=NUM_FILTERS_2, activat
 
     # stack of 3 conv layers, each conv, activation, max. pooling & dropout
     conv_1 = Conv2D(num_conv_filters, (3, 3), padding='valid', name='conv_1_conv')(input_layer)
+    conv_1 = BatchNormalization()(conv_1)
     conv_1 = Activation(activation, name='conv_1_activation')(conv_1)
     conv_1 = MaxPooling2D((1, 3), name='conv_1_max_pooling')(conv_1)
     conv_1 = Dropout(dropout_rate, name='conv_1_dropout')(conv_1)
 
     conv_2 = Conv2D(num_conv_filters, (3, 3), padding='valid', name='conv_2_conv')(conv_1)
+    conv_2 = BatchNormalization()(conv_2)
     conv_2 = Activation(activation, name='conv_2_activation')(conv_2)
     conv_2 = MaxPooling2D((1, 3), name='conv_2_max_pooling')(conv_2)
     conv_2 = Dropout(dropout_rate, name='conv_2_dropout')(conv_2)
 
     conv_3 = Conv2D(num_conv_filters, (1, 8), padding='valid', name='conv_3_conv')(conv_2)
+    conv_3 = BatchNormalization()(conv_3)
     conv_3 = Activation(activation, name='conv_3_activation')(conv_3)
-    conv_3 = MaxPooling2D((1, 3), name='conv_3_max_pooling')(conv_3)
+    # conv_3 = MaxPooling2D((1, 3), name='conv_3_max_pooling')(conv_3)
     conv_3 = Dropout(dropout_rate, name='conv_3_dropout')(conv_3)
 
     # Flatten layer
@@ -57,7 +61,7 @@ def build_model(input_shape=INPUT_SHAPE, num_conv_filters=NUM_FILTERS_2, activat
     # TCN layers
     dilations = [2 ** i for i in range(tcn_num_dilations)]
     tcn = TCN(
-        num_filters=[tcn_num_filters] * len(dilations),
+        num_filters=16,
         kernel_size=tcn_kernel_size,
         dilations=dilations,
         activation=activation,
@@ -128,6 +132,8 @@ def train_model(model, train_data, test_data=None, model_name='', save_model=Fal
     plot_metrics(history, metric='binary_accuracy', model_name=model_name, plot_save=plot_save, plot_save_path=plot_save_path, validation_included=(test_data is not None))
     plot_metrics(history, metric='loss', model_name=model_name, plot_save=plot_save, plot_save_path=plot_save_path, validation_included=(test_data is not None))
 
+    return history
+
 
 def plot_metrics(history, metric, validation_included, model_name='', plot_save=False, plot_save_path=''):
     valid_metrics = history.history.keys()
@@ -164,7 +170,6 @@ def plot_metrics(history, metric, validation_included, model_name='', plot_save=
 def predict(model, spectrogram_sequence_dataset):
     activations = {}
     detections = {}
-    print("INSIDE PREDICT FUNCTION")
 
     for i, batch_data in enumerate(spectrogram_sequence_dataset):
         # file name

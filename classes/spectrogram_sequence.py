@@ -1,3 +1,4 @@
+import tensorflow as tf
 from tensorflow import keras
 import sys
 import numpy as np
@@ -5,18 +6,21 @@ from utils.model_utils import cnn_pad
 
 
 class SpectrogramSequence(keras.utils.Sequence):
-    def __init__(self, data_sequence_tracks, data_sequence_pre_processor, pad_frames=None):
+    def __init__(self, data_sequence_tracks, data_sequence_pre_processor, data_sequence_pad_frames=None):
         self.spectrogram = {}
         self.ids = []
-        self.pad_frames = pad_frames
+        self.pad_frames = data_sequence_pad_frames
 
         for i, key in enumerate(data_sequence_tracks):
             sys.stderr.write(f'\rProcessing track {i + 1}/{len(data_sequence_tracks)}: {key + " " * 20}')
             sys.stderr.flush()
             track = data_sequence_tracks[key]
             spectrogram = data_sequence_pre_processor.process(track.audio_path)
-            self.spectrogram[key] = spectrogram
-            self.ids.append(key)
+            if len(spectrogram):
+                self.spectrogram[key] = spectrogram
+                self.ids.append(key)
+            else:
+                continue
 
         assert len(self.spectrogram) == len(self.ids)
 
@@ -33,7 +37,7 @@ class SpectrogramSequence(keras.utils.Sequence):
         if self.pad_frames:
             data_sequence_spectrogram = cnn_pad(data_sequence_spectrogram, self.pad_frames)
 
-        return data_sequence_spectrogram[np.newaxis, ..., np.newaxis]
+        return tf.convert_to_tensor(data_sequence_spectrogram[np.newaxis, ..., np.newaxis])
     
     def append(self, other):
         assert not any(key in self.ids for key in other.ids), 'IDs must be unique'

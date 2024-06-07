@@ -16,7 +16,7 @@ PAD_FRAMES = 2
 
 NUM_FRAMES = 5
 
-INPUT_SHAPE = (None, None, NUM_BINS, 1)
+INPUT_SHAPE = (None, None, 81, 1)
 
 # conv layers
 ACTIVATION_1 = 'elu'
@@ -46,7 +46,7 @@ NUM_FOLDS = 8
 # train
 NUM_EPOCHS = 100
 
-VALID_DATASET_NAMES = ['ballroom', 'smc', 'gtzan', 'dagstuhl_choir', 'beatboxset', 'guitarset_mic', 'guitarset_pickup', 'tiny_aam']
+VALID_DATASET_NAMES = ['ballroom', 'smc', 'gtzan', 'dagstuhl_choir', 'beatboxset', 'guitarset_mic', 'guitarset_pickup', 'tiny_aam', 'harmonix_set']
 
 DATASET_PATHS = {
     VALID_DATASET_NAMES[0]: {
@@ -80,6 +80,10 @@ DATASET_PATHS = {
     VALID_DATASET_NAMES[7]: {
         "audio_dir": '',
         "annot_dir": ''
+    },
+    VALID_DATASET_NAMES[8]: {
+        "audio_dir": '',
+        "annot_dir": ''
     }
 }
 
@@ -88,6 +92,7 @@ MODEL_SAVE_PATH = ''
 PLOT_SAVE_PATH = ''
 RESULTS_DIR_PATH = ''
 CSV_LOSSES_PATH = ''
+
 
 plot_colors = {
     'train': 'darkslategray',

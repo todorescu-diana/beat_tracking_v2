@@ -19,7 +19,6 @@ def one_hot_encode_beats(beat_positions_frames, total_frames):
 
 def plot_activations(beat_activations):
     # calculate time in seconds for each time frame
-    print(len(beat_activations))
     time_frames = range(len(beat_activations))  # example time frames
     time_seconds = np.array(time_frames) * FRAME_DURATION  # convert time frames to seconds as numpy array
 

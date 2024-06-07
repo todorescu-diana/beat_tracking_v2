@@ -60,11 +60,11 @@ class TCN:
     def __call__(self, inputs):
         x = inputs
         # create the TCN models
-        for i, num_filters in zip(self.dilations, self.num_filters):
+        for i in self.dilations:
             # feed the output of the previous layer into the next layer
             # increase dilation rate for each consecutive layer
             x, _ = residual_block(
-                x, i, self.activation, num_filters, self.kernel_size, self.padding, self.dropout_rate, name=self.name
+                x, i, self.activation, self.num_filters, self.kernel_size, self.padding, self.dropout_rate, name=self.name
             )
         # activate the output of the TCN stack
         x = Activation(self.activation, name=self.name + '_activation')(x)

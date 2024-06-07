@@ -59,11 +59,9 @@ class ContinuityEvaluationHelper(EvaluationHelperBase):
         beat_successes = self.get_beat_successes(annotations, detected_beats)
 
         longest_correct_segment = get_longest_continuous_segment_length(beat_successes)
-        # print("INDEX: ", beat_successes.index(False))
         if longest_correct_segment == 0. or longest_correct_segment == 1.:
             return 0.
-
-        # print(longest_correct_segment, len(annotations))
+        
         # Adjusting the calculation of longest_correct_segment
         longest_correct_segment = longest_correct_segment / len(annotations)
 

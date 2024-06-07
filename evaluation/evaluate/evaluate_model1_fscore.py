@@ -18,7 +18,8 @@ model = load_model('')
 pre_processor = SpectrogramProcessor()
 spectrogram_sequence = SpectrogramSequence(
     data_sequence_tracks = {k: v},
-    data_sequence_pre_processor=pre_processor,pad_frames=2
+    data_sequence_pre_processor=pre_processor,
+    data_sequence_pad_frames=2
 )
 
 act, det = predict(model, spectrogram_sequence)
