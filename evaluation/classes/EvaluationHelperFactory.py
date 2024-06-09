@@ -4,14 +4,19 @@ from evaluation.classes.FMeasureEvaluationHelper import FMeasureEvaluationHelper
 
 
 class EvaluationHelperFactory:
-    @staticmethod
-    def create_evaluation_helper(metric_name, **kwargs):
-        if metric_name == 'f_measure':
-            return FMeasureEvaluationHelper(**kwargs)
-        elif metric_name == 'cemgil':
-            return CemgilEvaluationHelper(**kwargs)
-        elif metric_name == 'continuity':
-            return ContinuityEvaluationHelper(**kwargs)
-        # Add more conditions for other types of evaluation helpers
-        else:
-            raise ValueError("Invalid metric name")
+    _registry = {}
+
+    @classmethod
+    def register_helper(cls, metric_name, helper_class):
+        cls._registry[metric_name] = helper_class
+
+    @classmethod
+    def create_evaluation_helper(cls, metric_name, **kwargs):
+        if metric_name not in cls._registry:
+            raise ValueError(f"Invalid metric name: {metric_name}")
+        helper_class = cls._registry[metric_name]
+        return helper_class(**kwargs)
+
+EvaluationHelperFactory.register_helper('f_measure', FMeasureEvaluationHelper)
+EvaluationHelperFactory.register_helper('cemgil', CemgilEvaluationHelper)
+EvaluationHelperFactory.register_helper('continuity', ContinuityEvaluationHelper)

@@ -4,9 +4,9 @@ import librosa
 import librosa.display
 import matplotlib.pyplot as plt
 
-from constants.constants import F_MAX, F_MIN, FFT_SIZE, FIXED_SAMPLE_RATE, NUM_BINS
+from constants.constants import F_MAX, F_MIN, FIXED_SAMPLE_RATE, N_FFT, NUM_BINS
 
-filter_bank = librosa.filters.mel(sr=FIXED_SAMPLE_RATE, n_fft=FFT_SIZE, n_mels=NUM_BINS,
+filter_bank = librosa.filters.mel(sr=FIXED_SAMPLE_RATE, n_fft=N_FFT, n_mels=NUM_BINS,
                                         fmin=F_MIN, fmax=F_MAX)
 
 plt.figure(figsize=(10, 4))

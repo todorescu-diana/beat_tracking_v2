@@ -1,7 +1,5 @@
-import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib.lines import Line2D
-
 from evaluation.classes.EvaluationHelperBase import EvaluationHelperBase
 from utils.utils import sum_continuous_true_segments, get_longest_continuous_segment_length, \
     get_longest_continuous_segment_bounds, get_all_except_longest_continuous_segment_bounds
@@ -16,7 +14,7 @@ class ContinuityEvaluationHelper(EvaluationHelperBase):
         tolerance_window_list = []
 
         for j in range(1, len(annotations)):
-            ann_interval = annotations[j] - annotations[j - 1]  # Calculate inter-annotation interval
+            ann_interval = annotations[j] - annotations[j - 1]  # inter-annotation interval
             tolerance_window = ann_interval * self.tolerance_factor
 
             tolerance_window_list.append(tolerance_window)
@@ -32,8 +30,8 @@ class ContinuityEvaluationHelper(EvaluationHelperBase):
         for i in range(1, len(detected_beats)):
             for j in range(1, len(annotations)):
                 if not used_annotations[j]:
-                    ann_interval = annotations[j] - annotations[j - 1]  # Calculate inter-annotation interval
-                    det_interval = detected_beats[i] - detected_beats[i - 1]  # Calculate inter-beat interval
+                    ann_interval = annotations[j] - annotations[j - 1]  # inter-annotation interval
+                    det_interval = detected_beats[i] - detected_beats[i - 1]  # inter-beat interval
 
                     tolerance_window = ann_interval * self.tolerance_factor
 
@@ -48,7 +46,7 @@ class ContinuityEvaluationHelper(EvaluationHelperBase):
                         if j == 1:
                             used_annotations[0] = True
                             beat_successes[0] = True
-                        break  # Move to the next detected beat
+                        break
         return beat_successes
 
     def calculate_cmlc(self, detected_beats, annotations):
@@ -62,23 +60,11 @@ class ContinuityEvaluationHelper(EvaluationHelperBase):
         if longest_correct_segment == 0. or longest_correct_segment == 1.:
             return 0.
         
-        # Adjusting the calculation of longest_correct_segment
         longest_correct_segment = longest_correct_segment / len(annotations)
 
         return round(longest_correct_segment, 2)
 
     def calculate_amlc(self, detected_beats, annotations):
-        """
-        Calculate the Correct Metrical Level, Continuity (CMLc) score.
-
-        Args:
-        - detected_beats (list): A list of detected beat timestamps.
-        - annotations (list): A list of ground truth annotation timestamps.
-        - tolerance_factor (float): Tolerance factor relative to the inter-annotation interval.
-
-        Returns:
-        - cmlc_score (float): The CMLc score, representing the longest continuously correct segment.
-        """
         amlc_score = 0.
 
         metrical_level_variations = get_metrical_level_variations(annotations)
@@ -91,7 +77,7 @@ class ContinuityEvaluationHelper(EvaluationHelperBase):
 
     def calculate_cmlt(self, detected_beats, annotations):
         if len(annotations) < 2 or len(detected_beats) < 2:
-            return 0.0  # Cannot compute CMLc with less than 2 annotations
+            return 0.0  # cannot compute CMLc with less than 2 annotations
 
         used_annotations = [False] * len(annotations)
         beat_successes = [False] * len(detected_beats)
@@ -99,8 +85,8 @@ class ContinuityEvaluationHelper(EvaluationHelperBase):
         for i in range(1, len(detected_beats)):
             for j in range(1, len(annotations)):
                 if not used_annotations[j]:
-                    ann_interval = annotations[j] - annotations[j - 1]  # Calculate inter-annotation interval
-                    det_interval = detected_beats[i] - detected_beats[i - 1]  # Calculate inter-beat interval
+                    ann_interval = annotations[j] - annotations[j - 1]  # inter-annotation interval
+                    det_interval = detected_beats[i] - detected_beats[i - 1]  # inter-beat interval
 
                     tolerance_window = ann_interval * self.tolerance_factor
 
@@ -116,28 +102,17 @@ class ContinuityEvaluationHelper(EvaluationHelperBase):
                             used_annotations[0] = True
                             beat_successes[0] = True
 
-                        break  # Move to the next detected beat
+                        break
 
         correct_segments_sum = sum_continuous_true_segments(beat_successes)
         if not correct_segments_sum:
             return 0.
-        # Adjusting the calculation of longest_correct_segment
+        
         cmlt_score = correct_segments_sum / len(annotations)
 
         return round(cmlt_score, 2)
 
     def calculate_amlt(self, detected_beats, annotations):
-        """
-        Calculate the Correct Metrical Level, Continuity (CMLc) score.
-
-        Args:
-        - detected_beats (list): A list of detected beat timestamps.
-        - annotations (list): A list of ground truth annotation timestamps.
-        - tolerance_factor (float): Tolerance factor relative to the inter-annotation interval.
-
-        Returns:
-        - cmlc_score (float): The CMLc score, representing the longest continuously correct segment.
-        """
         amlt_score = 0.
 
         metrical_level_variations = get_metrical_level_variations(annotations)
@@ -149,25 +124,6 @@ class ContinuityEvaluationHelper(EvaluationHelperBase):
         return round(amlt_score, 2)
 
     def calculate_metric(self, predicted_beats, ground_truth_beats):
-        """
-            Parameters
-            ----------
-            predicted_beats : np.ndarray
-                reference beat times, in seconds
-            ground_truth_beats : np.ndarray
-                query beat times, in seconds
-
-            Returns
-            -------
-            CMLc : float
-                Correct Metrical Level in Continuity
-            CMLt : float
-                Correct Metrical Level in Timing
-            AMLc : float
-                Allowed / Any Metrical Level in Continuity
-            AMLt : float
-                Allowed / Any Metrical Level in Timing
-            """
         cmlc = self.calculate_cmlc(predicted_beats, ground_truth_beats)
         cmlt = self.calculate_cmlt(predicted_beats, ground_truth_beats)
         amlc = self.calculate_amlc(predicted_beats, ground_truth_beats)
@@ -215,7 +171,6 @@ class ContinuityEvaluationHelper(EvaluationHelperBase):
             plt.fill_betweenx([0, 1], x1=beat - tolerance_window_list[index], x2=beat + tolerance_window_list[index],
                               color='forestgreen', alpha=0.25)
 
-        # Create custom legend entries
         legend_handles = [
             Line2D([0], [0], color='black', linestyle='--', linewidth=1),
             Line2D([0], [0], color='black', linestyle='-', linewidth=2),
@@ -227,16 +182,11 @@ class ContinuityEvaluationHelper(EvaluationHelperBase):
                          'Continuous segments', 'Longest continuous segment']
         plt.title('Predicted Beats and Reference Beats with Tolerance Window, CMLc, CMLt, ' + metrical_level_name)
 
-        # Create a legend object
         legend = plt.legend(legend_handles, legend_labels, loc='upper right')
-
-        # Customize legend position
         plt.gca().add_artist(legend)
-
         plt.xlabel('Time (s)')
         plt.yticks([])
-        # plt.legend()
-        # plt.grid(True)
+        
         plt.show()
 
     def plot_beats(self, predicted_beats, ground_truth_beats):
