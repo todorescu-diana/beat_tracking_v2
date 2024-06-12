@@ -63,9 +63,9 @@ class MelSpectrogramProcessor:
                                  fmin=F_MIN, fmax=F_MAX)
 
         plt.yticks(y_tick_positions)
-        plt.ylabel('Frequency [bins]')
+        plt.ylabel('mel bins')
         plt.colorbar(format='%+2.0f dB')
-        plt.title('Log-frequency power spectrogram')
+        plt.title('mel spectrogram')
         plt.set_cmap(cmap)
         plt.tight_layout()
         plt.show()

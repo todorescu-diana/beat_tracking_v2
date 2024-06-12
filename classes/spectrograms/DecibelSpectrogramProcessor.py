@@ -22,7 +22,7 @@ class DecibelSpectrogramProcessor(SpectrogramProcessorBase):
             y, original_sr = librosa.load(audio_path, sr=None)
             y_resampled = librosa.resample(y, orig_sr=original_sr, target_sr=self.sample_rate)
 
-            stft = librosa.stft(y_resampled, n_fft=self.window_length, win_length=2048, window='hann', hop_length=self.hop_size_samples)
+            stft = librosa.stft(y_resampled, n_fft=self.window_length, win_length=2048, window='hann', hop_length=self.hop_length)
             magnitude_spectrogram = np.abs(stft) ** 2
             spectrogram_db = librosa.power_to_db(magnitude_spectrogram, ref=np.max)
 
@@ -37,7 +37,7 @@ class DecibelSpectrogramProcessor(SpectrogramProcessorBase):
             num_frames_to_display = int(duration_s * self.sample_rate / self.hop_length)
             spectrogram = spectrogram[:num_frames_to_display, :]
 
-        plt.figure(figsize=(10, 6))
+        plt.figure(figsize=(10, 4))
         librosa.display.specshow(spectrogram.T, sr=self.sample_rate, hop_length=self.hop_length, x_axis='time', y_axis='log',
                                  fmin=F_MIN, fmax=F_MAX)
         plt.set_cmap(cmap)
