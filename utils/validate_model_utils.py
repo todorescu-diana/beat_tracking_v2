@@ -1,8 +1,8 @@
 import numpy as np
 from sklearn.model_selection import KFold
-from classes.data_sequence import DataSequence
-from classes.spectrogram_processor import SpectrogramProcessor
-from classes.spectrogram_sequence import SpectrogramSequence
+from classes.sequences.data_sequence import DataSequence
+from classes.sequences.spectrogram_sequence import SpectrogramSequence
+from classes.spectrograms.SpectrogramProcessorFactory import SpectrogramProcessorFactory
 from constants.constants import MODEL_SAVE_PATH, NUM_FOLDS, PAD_FRAMES, NUM_EPOCHS, PLOT_SAVE_PATH, SUMMARY_SAVE_PATH
 from evaluation.classes.EvaluationHelperFactory import EvaluationHelperFactory
 from utils.model_utils import build_model, compile_model, train_model, predict
@@ -36,18 +36,21 @@ def k_fold_cross_validation(dataset_tracks, n_splits=NUM_FOLDS, epochs=NUM_EPOCH
                 train_files = [dataset_tracks_keys[i] for i in train_index]
                 test_files = [dataset_tracks_keys[i] for i in test_index]
 
-                pre_processor = SpectrogramProcessor()
+                spectrogram_processor_factory = SpectrogramProcessorFactory()
+                mel_preprocessor = spectrogram_processor_factory.create_spectrogram_processor('mel')
+                cqt_preprocessor = spectrogram_processor_factory.create_spectrogram_processor('cqt')
+                pre_processor = mel_preprocessor # TODO
 
                 train = DataSequence(
-                    data_sequence_tracks={k: v for k, v in dataset_tracks.items() if k in train_files},
-                    data_sequence_pre_processor=pre_processor,
+                    tracks={k: v for k, v in dataset_tracks.items() if k in train_files},
+                    pre_processor=pre_processor,
                     pad_frames=PAD_FRAMES
                 )
                 train.widen_beat_targets()
 
                 test = DataSequence(
-                    data_sequence_tracks={k: v for k, v in dataset_tracks.items() if k in test_files},
-                    data_sequence_pre_processor=pre_processor,
+                    tracks={k: v for k, v in dataset_tracks.items() if k in test_files},
+                    pre_processor=pre_processor,
                     pad_frames=PAD_FRAMES
                 )
                 test.widen_beat_targets()
@@ -64,9 +67,9 @@ def k_fold_cross_validation(dataset_tracks, n_splits=NUM_FOLDS, epochs=NUM_EPOCH
                 loss, accuracy = model.evaluate(test)
 
                 spectrogram_sequence = SpectrogramSequence(
-                    data_sequence_tracks=dataset_tracks,
-                    data_sequence_pre_processor=pre_processor,
-                    data_sequence_pad_frames=2
+                    tracks={k: v for k, v in dataset_tracks.items() if k in test_files},
+                    pre_processor=pre_processor,
+                    pad_frames=2
                 )
 
                 total_valid_dataset_tracks = len(spectrogram_sequence)

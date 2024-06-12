@@ -15,9 +15,9 @@ plt.figure(figsize=(10, 6))
 plt.plot(t, sine_wave_1, label=f'Sine wave 1: {frequency_1} Hz', color='blue')
 plt.plot(t, sine_wave_1, label=f'Sine wave 2: {frequency_1} Hz', color='red', linestyle='--')
 
-plt.title('Sine Waves with Different Frequencies')
-plt.xlabel('Time [s]')
-plt.ylabel('Amplitude')
+plt.title('sine waves with different frequencies')
+plt.xlabel('time [s]')
+plt.ylabel('amplitude')
 plt.legend()
 
 plt.grid(True)

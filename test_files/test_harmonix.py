@@ -1,7 +1,7 @@
 import sys
 sys.path.append('')
+from classes.spectrograms.SpectrogramProcessorFactory import SpectrogramProcessorFactory
 from utils.utils import play_audio_with_clicktrack
-from classes.spectrogram_processor import SpectrogramProcessor
 from constants.constants import VALID_DATASET_NAMES
 from utils.dataset_utils import get_load_dataset_params, load_dataset
 
@@ -12,7 +12,11 @@ replace_dots_with_underline, tiny_aam, harmonix_set = get_load_dataset_params(da
 
 dataset_tracks = load_dataset(dataset_name, replace_dots_with_underline, tiny_aam, harmonix_set)
 
-pre_processor = SpectrogramProcessor()
+spectrogram_processor_factory = SpectrogramProcessorFactory()
+mel_preprocessor = spectrogram_processor_factory.create_spectrogram_processor('mel')
+cqt_preprocessor = spectrogram_processor_factory.create_spectrogram_processor('cqt')
+
+pre_processor = mel_preprocessor
 spectrogram = pre_processor.process(dataset_tracks['0001_12step'].audio_path)
 pre_processor.plot_spectrogram(spectrogram, duration=5)
 

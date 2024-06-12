@@ -7,8 +7,8 @@ from utils.model_utils import cnn_pad
 
 class SpectrogramSequence(Sequence):
     def __init__(self, tracks, pre_processor, pad_frames=None):
-        self.spectrogram = {}
         self.ids = []
+        self.spectrograms = {}
         self.pad_frames = pad_frames
 
         for i, key in enumerate(tracks):
@@ -18,12 +18,12 @@ class SpectrogramSequence(Sequence):
             track = tracks[key]
             spectrogram = pre_processor.process(track.audio_path)
             if len(spectrogram):
-                self.spectrogram[key] = spectrogram
+                self.spectrograms[key] = spectrogram
                 self.ids.append(key)
             else:
                 continue
 
-        assert len(self.spectrogram) == len(self.ids)
+        assert len(self.spectrograms) == len(self.ids)
 
     def __len__(self):
         return len(self.ids)
@@ -32,7 +32,7 @@ class SpectrogramSequence(Sequence):
         if isinstance(idx, int):
             idx = self.ids[idx]
 
-        data_sequence_spectrogram = self.spectrogram[idx]
+        data_sequence_spectrogram = self.spectrograms[idx]
         if self.pad_frames:
             data_sequence_spectrogram = cnn_pad(data_sequence_spectrogram, self.pad_frames)
 
@@ -40,5 +40,5 @@ class SpectrogramSequence(Sequence):
     
     def append(self, other):
         assert not any(key in self.ids for key in other.ids), 'IDs must be unique'
-        self.spectrogram.update(other.spectrogram)
+        self.spectrograms.update(other.spectrograms)
         self.ids.extend(other.ids)

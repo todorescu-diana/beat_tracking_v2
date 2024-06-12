@@ -1,12 +1,12 @@
 import sys
+
+from classes.sequences.spectrogram_sequence import SpectrogramSequence
+from classes.spectrograms.SpectrogramProcessorFactory import SpectrogramProcessorFactory
 sys.path.append('')
 from classes.audio_track import AudioTrack
 from utils.utils import play_audio_with_clicktrack
 from utils.model_utils import predict
 from keras.models import load_model
-
-from classes.spectrogram_processor import SpectrogramProcessor
-from classes.spectrogram_sequence import SpectrogramSequence
 from constants.constants import VALID_DATASET_NAMES
 from utils.dataset_utils import get_load_dataset_params, load_dataset
 from evaluation.classes.EvaluationHelperFactory import EvaluationHelperFactory
@@ -14,7 +14,11 @@ from evaluation.classes.EvaluationHelperFactory import EvaluationHelperFactory
 model = load_model('')
 
 dataset_name = VALID_DATASET_NAMES[2]
-pre_processor = SpectrogramProcessor()
+
+spectrogram_processor_factory = SpectrogramProcessorFactory()
+mel_preprocessor = spectrogram_processor_factory.create_spectrogram_processor('mel')
+cqt_preprocessor = spectrogram_processor_factory.create_spectrogram_processor('cqt')
+pre_processor = mel_preprocessor
 
 replace_dots_with_underline, tiny_aam, harmonix_set = get_load_dataset_params(dataset_name)
 dataset_tracks = load_dataset(dataset_name, replace_dots_with_underline, tiny_aam, harmonix_set)

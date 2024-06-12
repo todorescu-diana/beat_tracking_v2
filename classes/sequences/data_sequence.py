@@ -11,7 +11,7 @@ from utils.model_utils import cnn_pad
 class DataSequence(Sequence):
     def __init__(self, tracks, pre_processor, pad_frames=None, fps=FPS):
         self.ids = []
-        self.spectrogram = {}
+        self.spectrograms = {}
         self.beats = {}
         self.pad_frames = pad_frames
         self.fps = fps
@@ -26,7 +26,7 @@ class DataSequence(Sequence):
                 data_sequence_beats = t.beats.times
                 data_sequence_spectrogram = pre_processor.process(t.audio_path)
                 if len(data_sequence_spectrogram):
-                  self.spectrogram[data_sequence_key] = data_sequence_spectrogram
+                  self.spectrograms[data_sequence_key] = data_sequence_spectrogram
 
                   beat_positions_frames = beats_to_frame_indices(data_sequence_beats, self.fps)
                   quantized_beat_frames = one_hot_encode_beats(beat_positions_frames, data_sequence_spectrogram.shape[0])
@@ -38,7 +38,7 @@ class DataSequence(Sequence):
                 continue
 
             self.ids.append(data_sequence_key)
-        assert len(self.spectrogram) == len(self.beats) == len(self.ids)
+        assert len(self.spectrograms) == len(self.beats) == len(self.ids)
 
     def __len__(self):
         return len(self.ids)
@@ -47,7 +47,7 @@ class DataSequence(Sequence):
         if isinstance(idx, int):
             idx = self.ids[idx]
 
-        data_sequence_spectrogram = self.spectrogram[idx]
+        data_sequence_spectrogram = self.spectrograms[idx]
         if self.pad_frames:
             data_sequence_spectrogram = cnn_pad(data_sequence_spectrogram, self.pad_frames)
         beat_data = self.beats[idx]
@@ -60,6 +60,6 @@ class DataSequence(Sequence):
 
     def append(self, other):
         assert not any(key in self.ids for key in other.ids), 'IDs must be unique'
-        self.spectrogram.update(other.spectrogram)
+        self.spectrograms.update(other.spectrograms)
         self.beats.update(other.beats)
         self.ids.extend(other.ids)

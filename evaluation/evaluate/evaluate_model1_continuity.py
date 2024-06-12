@@ -4,7 +4,7 @@ from classes.spectrogram_sequence import SpectrogramSequence
 from utils.model_utils import predict
 import mir_eval
 import mirdata
-from classes.spectrogram_processor import SpectrogramProcessor
+from classes.mel_spectrogram_processor import MelSpectrogramProcessor
 from evaluation.classes.EvaluationHelperFactory import EvaluationHelperFactory
 from keras.models import load_model
 
@@ -15,7 +15,7 @@ k, v = track
 
 model = load_model('')
 
-pre_processor = SpectrogramProcessor()
+pre_processor = MelSpectrogramProcessor()
 spectrogram_sequence = SpectrogramSequence(
     data_sequence_tracks = {k: v},
     data_sequence_pre_processor=pre_processor,
