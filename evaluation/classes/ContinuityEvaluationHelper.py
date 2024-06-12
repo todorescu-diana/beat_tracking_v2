@@ -10,6 +10,10 @@ class ContinuityEvaluationHelper(EvaluationHelperBase):
     def __init__(self, tolerance_factor=0.175):
         self.tolerance_factor = tolerance_factor
 
+    @staticmethod
+    def metric_components():
+        return ['CMLc', 'CMLt', 'AMLc', 'AMLt']
+
     def get_tolerance_window_list(self, annotations):
         tolerance_window_list = []
 
@@ -130,10 +134,6 @@ class ContinuityEvaluationHelper(EvaluationHelperBase):
         amlt = self.calculate_amlt(predicted_beats, ground_truth_beats)
 
         return cmlc, cmlt, amlc, amlt
-
-    @staticmethod
-    def metric_components():
-        return ['CMLc', 'CMLt', 'AMLc', 'AMLt']
 
     def plot_cmlc_cmlt(self, ground_truth_beats, predicted_beats, metrical_level_name):
         plt.ylim(bottom=0, top=1)

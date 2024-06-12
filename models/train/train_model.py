@@ -10,7 +10,7 @@ import tensorflow as tf
 
 with tf.device('/GPU:0'):
     # datasets - separate
-    dataset_name = VALID_DATASET_NAMES[2]
+    dataset_name = VALID_DATASET_NAMES[7]
 
     replace_dots_with_underline, tiny_aam, harmonix_set = get_load_dataset_params(dataset_name)
     
@@ -41,5 +41,5 @@ with tf.device('/GPU:0'):
         test.widen_beat_targets()
 
         model = build_model()
-        compile_model(model, summary=True, model_name=model_name, summary_save_path=SUMMARY_SAVE_PATH)
+        compile_model(model, lr=0.002, summary=True, model_name=model_name, summary_save_path=SUMMARY_SAVE_PATH)
         train_model(model, train_data=train, test_data=test, save_model=True, model_name=model_name, model_save_path=MODEL_SAVE_PATH, plot_save=True, plot_save_path=PLOT_SAVE_PATH)

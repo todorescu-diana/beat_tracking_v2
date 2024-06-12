@@ -7,6 +7,10 @@ class FMeasureEvaluationHelper(EvaluationHelperBase):
     def __init__(self, tolerance_ms=70):
         self.tolerance_ms = tolerance_ms
 
+    @staticmethod
+    def metric_components():
+        return ['precision', 'recall', 'f_score']
+
     def calculate_tp_fp_fn(self, predicted_beats, ground_truth_beats):
         tp = 0
         fp = 0
@@ -38,10 +42,6 @@ class FMeasureEvaluationHelper(EvaluationHelperBase):
             else:
                 f_score = 0.
             return round(precision, 2), round(recall, 2), round(f_score, 2)
-
-    @staticmethod
-    def metric_components():
-        return ['precision', 'recall', 'f_score']
 
     def plot_beats(self, predicted_beats, ground_truth_beats, n=None):
         if n is not None:

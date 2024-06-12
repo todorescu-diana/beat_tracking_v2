@@ -10,6 +10,10 @@ class CemgilEvaluationHelper(EvaluationHelperBase):
         self.tolerance_ms = tolerance_ms
 
     @staticmethod
+    def metric_components():
+        return ['cemgil']
+
+    @staticmethod
     def gaussian_error(x, mu=0, sigma=1):
         return np.exp((-1.) * ((x - mu) ** 2) / (2.0 * (sigma ** 2)))
 
@@ -36,10 +40,6 @@ class CemgilEvaluationHelper(EvaluationHelperBase):
             cemgil_accuracy = 0.
         
         return round(cemgil_accuracy, 2)
-
-    @staticmethod
-    def metric_components():
-        return ['cemgil']
 
     def plot_beats(self, predicted_beats, ground_truth_beats, n=None):
         if n is not None:

@@ -2,13 +2,13 @@ from abc import ABC, abstractmethod
 
 
 class EvaluationHelperBase(ABC):
-    @abstractmethod
-    def calculate_metric(self, detections, annotations):
-        pass
-
     @staticmethod
     @abstractmethod
     def metric_components():
+        pass
+    
+    @abstractmethod
+    def calculate_metric(self, detections, annotations):
         pass
 
     @abstractmethod
