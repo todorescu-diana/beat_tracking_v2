@@ -23,7 +23,7 @@ class LinearSpectrogramProcessor(SpectrogramProcessorBase):
             y_resampled = librosa.resample(y, orig_sr=original_sr, target_sr=self.sample_rate)
 
             stft = librosa.stft(y_resampled, n_fft=self.window_length, win_length=2048, window='hann', hop_length=self.hop_length)
-            magnitude_spectrogram = np.abs(stft) ** 2
+            magnitude_spectrogram = np.abs(stft)
 
             spectrogram_transposed = magnitude_spectrogram.T
             return spectrogram_transposed
@@ -44,6 +44,6 @@ class LinearSpectrogramProcessor(SpectrogramProcessorBase):
         plt.ylabel('frequency [Hz]')
         plt.xlabel('time [s]')
         plt.title('linear spectrogram')
+        plt.ylim(self.f_min, self.f_max)
         plt.tight_layout()
         plt.show()
-
