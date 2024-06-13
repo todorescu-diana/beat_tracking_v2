@@ -1,8 +1,6 @@
 import sys
 sys.path.append('')
 from classes.spectrograms.SpectrogramProcessorFactory import SpectrogramProcessorFactory
-import librosa
-import soundfile as sf
 
 spectrogram_processor_factory = SpectrogramProcessorFactory()
 lin_preprocessor = spectrogram_processor_factory.create_spectrogram_processor('lin')

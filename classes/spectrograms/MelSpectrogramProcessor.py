@@ -64,8 +64,11 @@ class MelSpectrogramProcessor:
 
         plt.yticks(y_tick_positions)
         plt.ylabel('mel bins')
+        plt.xlabel('time [s]')
         plt.colorbar(format='%+2.0f dB')
-        plt.title('mel spectrogram')
+        plt.title("mel spectrogram, Bauhaus - Bela Lugosi's Dead, 0:00 - 0:10")
         plt.set_cmap(cmap)
         plt.tight_layout()
-        plt.show()
+        # plt.show()
+        plt.savefig('figure_plots/belalugosi_mel_spectrogram.png')
+        plt.close()
