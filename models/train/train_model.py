@@ -10,7 +10,7 @@ import tensorflow as tf
 
 with tf.device('/GPU:0'):
     # datasets - separate
-    dataset_name = VALID_DATASET_NAMES[7]
+    dataset_name = VALID_DATASET_NAMES[3]
 
     replace_dots_with_underline, tiny_aam, harmonix_set = get_load_dataset_params(dataset_name)
     

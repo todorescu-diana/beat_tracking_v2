@@ -99,7 +99,7 @@ def compile_model(model, summary=False, model_name='', summary_save_path='', lr=
             text_file.write(model_summary)
 
 
-def train_model(model, train_data, test_data=None, model_name='', save_model=False, model_save_path='', epochs=NUM_EPOCHS, plot_save=False, plot_save_path=''):
+def train_model(model, train_data, test_data=None, model_name='', save_model=False, model_save_path='', epochs=NUM_EPOCHS, plot_save=False, plot_save_path='', plot_display=True, csv_log=True):
     # define callbacks
 
     mc = ModelCheckpoint(model_save_path + '/' + model_name + '_best.h5', monitor='loss', save_best_only=True, verbose=0)
@@ -108,10 +108,12 @@ def train_model(model, train_data, test_data=None, model_name='', save_model=Fal
     es = EarlyStopping(monitor='loss', min_delta=1e-4, patience=50, verbose=0)
     csv_logger = CSVLogger(CSV_LOSSES_PATH + '/' + model_name + '.csv', append=True, separator=';')
 
+    callbacks = [lr, es]
+
     if save_model and model_save_path != '':
-        callbacks = [mc, lr, es, csv_logger]
-    else:
-        callbacks = [lr, es, csv_logger]
+        callbacks.append(mc)
+    if csv_log:
+        callbacks.append(csv_logger)
 
     if test_data is not None:
         validation_data = test_data
@@ -128,11 +130,9 @@ def train_model(model, train_data, test_data=None, model_name='', save_model=Fal
                         validation_steps=validation_steps,
                         shuffle=True,
                         callbacks=callbacks)
-
-    plot_metrics(history, metric='binary_accuracy', model_name=model_name, plot_save=plot_save, plot_save_path=plot_save_path, validation_included=(test_data is not None))
-    plot_metrics(history, metric='loss', model_name=model_name, plot_save=plot_save, plot_save_path=plot_save_path, validation_included=(test_data is not None))
-
-    return history
+    if plot_display or plot_save:
+        plot_metrics(history, metric='binary_accuracy', model_name=model_name, plot_save=plot_save, plot_save_path=plot_save_path, validation_included=(test_data is not None))
+        plot_metrics(history, metric='loss', model_name=model_name, plot_save=plot_save, plot_save_path=plot_save_path, validation_included=(test_data is not None))
 
 
 def plot_metrics(history, metric, validation_included, model_name='', plot_save=False, plot_save_path=''):

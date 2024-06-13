@@ -3,9 +3,10 @@ from sklearn.model_selection import KFold
 from classes.sequences.data_sequence import DataSequence
 from classes.sequences.spectrogram_sequence import SpectrogramSequence
 from classes.spectrograms.SpectrogramProcessorFactory import SpectrogramProcessorFactory
-from constants.constants import MODEL_SAVE_PATH, NUM_FOLDS, PAD_FRAMES, NUM_EPOCHS, PLOT_SAVE_PATH, SUMMARY_SAVE_PATH
+from constants.constants import MODEL_SAVE_PATH, NUM_FOLDS, PAD_FRAMES, NUM_EPOCHS, PLOT_SAVE_PATH
 from evaluation.classes.EvaluationHelperFactory import EvaluationHelperFactory
-from utils.model_utils import build_model, compile_model, train_model, predict
+from utils.model_utils import build_model, compile_model, predict
+from keras.callbacks import ReduceLROnPlateau, EarlyStopping
 
 
 def k_fold_cross_validation(dataset_tracks, n_splits=NUM_FOLDS, epochs=NUM_EPOCHS, dataset_name='', results_dir_path=''):
@@ -15,10 +16,10 @@ def k_fold_cross_validation(dataset_tracks, n_splits=NUM_FOLDS, epochs=NUM_EPOCH
         dataset_tracks_keys = list(dataset_tracks.keys())
 
         if len(dataset_tracks_keys):
-            # Initialize KFold cross-validator
-            kf = KFold(n_splits=2, shuffle=True, random_state=1234)
+            # initialize KFold cross-validator
+            kf = KFold(n_splits=n_splits, shuffle=True, random_state=1234)
 
-            # Initialize lists to store evaluation metrics
+            # initialize lists to store evaluation metrics
             accuracy_scores = []
             loss_scores = []
             train_accuracy_scores = []
@@ -38,8 +39,7 @@ def k_fold_cross_validation(dataset_tracks, n_splits=NUM_FOLDS, epochs=NUM_EPOCH
 
                 spectrogram_processor_factory = SpectrogramProcessorFactory()
                 mel_preprocessor = spectrogram_processor_factory.create_spectrogram_processor('mel')
-                cqt_preprocessor = spectrogram_processor_factory.create_spectrogram_processor('cqt')
-                pre_processor = mel_preprocessor # TODO
+                pre_processor = mel_preprocessor
 
                 train = DataSequence(
                     tracks={k: v for k, v in dataset_tracks.items() if k in train_files},
@@ -55,27 +55,51 @@ def k_fold_cross_validation(dataset_tracks, n_splits=NUM_FOLDS, epochs=NUM_EPOCH
                 )
                 test.widen_beat_targets()
 
-                model = build_model()
-                compile_model(model, summary=True, model_name=dataset_name + f'_fold{fold_idx}')
-                history = train_model(model, epochs=epochs, train_data=train, test_data=test, model_name=dataset_name + f'_fold{fold_idx}', plot_save=True, plot_save_path=PLOT_SAVE_PATH)
+                model_name = dataset_name + f'_fold{fold_idx}_' + pre_processor.spectrogram_type()
 
-                # Store training history
+                model = build_model()
+                compile_model(model, model_name=model_name)
+                # define callbacks
+
+                lr = ReduceLROnPlateau(monitor='loss', factor=0.2, patience=10, verbose=1, mode='auto', min_delta=1e-3, cooldown=0,
+                                    min_lr=1e-7)
+                es = EarlyStopping(monitor='loss', min_delta=1e-4, patience=50, verbose=0)
+
+                callbacks = [lr, es]
+
+                if test is not None:
+                    validation_data = test
+                    validation_steps = len(test)
+                else:
+                    validation_data = None
+                    validation_steps = None
+
+                # train the model
+                history = model.fit(train,
+                                    steps_per_epoch=len(train),
+                                    epochs=epochs,
+                                    validation_data=validation_data,
+                                    validation_steps=validation_steps,
+                                    shuffle=True,
+                                    callbacks=callbacks)
+
+                # store training history
                 train_accuracy_scores.append(history.history['binary_accuracy'])
                 train_loss_scores.append(history.history['loss'])
 
-                # Evaluate the model
+                # evaluate the model
                 loss, accuracy = model.evaluate(test)
 
-                spectrogram_sequence = SpectrogramSequence(
+                spectrogram_test_sequence = SpectrogramSequence(
                     tracks={k: v for k, v in dataset_tracks.items() if k in test_files},
                     pre_processor=pre_processor,
                     pad_frames=2
                 )
 
-                total_valid_dataset_tracks = len(spectrogram_sequence)
+                total_valid_dataset_tracks = len(spectrogram_test_sequence)
 
                 # predict for metrics
-                _, detections = predict(model, spectrogram_sequence)
+                _, detections = predict(model, spectrogram_test_sequence)
                 beat_detections = detections
                 beat_annotations = {k: {'beats': v.beats.times} for k, v in dataset_tracks.items() if v.beats is not None}
 
@@ -92,7 +116,7 @@ def k_fold_cross_validation(dataset_tracks, n_splits=NUM_FOLDS, epochs=NUM_EPOCH
                 continuity_scores.append(continuity_dataset_mean)
                 f_measure_scores.append(f_measure_dataset_mean)
 
-            # Calculate average evaluation metrics
+            # calculate average evaluation metrics
             avg_accuracy = np.mean(accuracy_scores)
             avg_loss = np.mean(loss_scores)
 
@@ -104,7 +128,7 @@ def k_fold_cross_validation(dataset_tracks, n_splits=NUM_FOLDS, epochs=NUM_EPOCH
                     sum_cemgil = {}
                     sum_continuity = {}
                     sum_f_measure = {}
-                    for fold_idx in range(2):
+                    for fold_idx in range(n_splits):
                         for key, value in cemgil_scores[fold_idx].items():
                             if key in sum_cemgil:
                                 sum_cemgil[key] += value

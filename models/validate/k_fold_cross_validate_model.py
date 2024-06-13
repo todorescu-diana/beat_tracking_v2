@@ -3,7 +3,6 @@ sys.path.append('')
 from constants.constants import RESULTS_DIR_PATH, VALID_DATASET_NAMES
 from utils.dataset_utils import get_load_dataset_params, load_dataset
 from utils.validate_model_utils import k_fold_cross_validation
-import tensorflow as tf
 
 dataset_name = VALID_DATASET_NAMES[2]
 
