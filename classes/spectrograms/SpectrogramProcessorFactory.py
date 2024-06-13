@@ -1,7 +1,8 @@
 import sys
+
+from classes.spectrograms.LinearSpectrogram import LinearSpectrogramProcessor
 sys.path.append('')
 from classes.spectrograms.DecibelSpectrogramProcessor import DecibelSpectrogramProcessor
-from classes.spectrograms.LogSpectrogramProcessor import LogSpectrogramProcessor
 from classes.spectrograms.MelSpectrogramProcessor import MelSpectrogramProcessor
 
 
@@ -20,5 +21,5 @@ class SpectrogramProcessorFactory:
         return processor_class(**kwargs)
 
 SpectrogramProcessorFactory.register_processor('db', DecibelSpectrogramProcessor)
-SpectrogramProcessorFactory.register_processor('log', LogSpectrogramProcessor)
+SpectrogramProcessorFactory.register_processor('lin', LinearSpectrogramProcessor)
 SpectrogramProcessorFactory.register_processor('mel', MelSpectrogramProcessor)

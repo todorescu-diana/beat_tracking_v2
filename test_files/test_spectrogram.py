@@ -23,8 +23,7 @@ tf.get_logger().setLevel(logging.ERROR)
 # first_k, first_v = first_track
 # # chericherilady = AudioTrack(audio_path=first_v.audio_path)
 spectrogram_processor_factory = SpectrogramProcessorFactory()
-mel_preprocessor = spectrogram_processor_factory.create_spectrogram_processor('mel')
-cqt_preprocessor = spectrogram_processor_factory.create_spectrogram_processor('cqt')
+mel_preprocessor = spectrogram_processor_factory.create_spectrogram_processor('db')
 pre_processor = mel_preprocessor
 # spectrogram_sequence = SpectrogramSequence(
 #     data_sequence_tracks = tracks,
