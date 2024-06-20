@@ -32,10 +32,9 @@ def cnn_pad(data, pad_frames):
 def build_model(input_shape=INPUT_SHAPE, num_conv_filters=CONV_NUM_FILTERS, activation=ACTIVATION,
                 dropout_rate=DROPOUT_RATE, tcn_num_filters=TCN_NUM_FILTERS, tcn_kernel_size=TCN_KERNEL_SIZE,
                 tcn_num_dilations=TCN_NUM_DILATIONS):
-    # Input layer
+    
     input_layer = Input(batch_shape=input_shape)
-
-    # stack of 3 conv layers, each conv, activation, max. pooling & dropout
+    
     conv_1 = Conv2D(num_conv_filters, (3, 3), padding='valid', name='conv_1_conv')(input_layer)
     conv_1 = Activation(activation, name='conv_1_activation')(conv_1)
     conv_1 = MaxPooling2D((1, 3), name='conv_1_max_pooling')(conv_1)
@@ -48,13 +47,10 @@ def build_model(input_shape=INPUT_SHAPE, num_conv_filters=CONV_NUM_FILTERS, acti
 
     conv_3 = Conv2D(num_conv_filters, (1, 8), padding='valid', name='conv_3_conv')(conv_2)
     conv_3 = Activation(activation, name='conv_3_activation')(conv_3)
-    # conv_3 = MaxPooling2D((1, 3), name='conv_3_max_pooling')(conv_3)
     conv_3 = Dropout(dropout_rate, name='conv_3_dropout')(conv_3)
 
-    # Flatten layer
     reshape = Reshape(target_shape=(-1, num_conv_filters))(conv_3)
 
-    # TCN layers
     dilations = [2 ** i for i in range(tcn_num_dilations)]
     tcn = TCN(
         num_filters=tcn_num_filters,
@@ -64,14 +60,12 @@ def build_model(input_shape=INPUT_SHAPE, num_conv_filters=CONV_NUM_FILTERS, acti
         padding='same',
         dropout_rate=dropout_rate,
     )(reshape)
-    # Dense layers
+
     beats = Dropout(dropout_rate, name='beats_dropout')(tcn)
     beats = Dense(1)(beats)
     beats = Activation(activation='sigmoid', name='beats')(beats)
 
-    # Model
     return Model(inputs=input_layer, outputs=[beats])
-
 
 def compile_model(model, summary=False, model_name='', summary_save_path='', lr=None):
     if lr is not None:

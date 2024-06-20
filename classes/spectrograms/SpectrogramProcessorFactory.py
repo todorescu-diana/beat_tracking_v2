@@ -20,6 +20,6 @@ class SpectrogramProcessorFactory:
         processor_class = cls._registry[type]
         return processor_class(**kwargs)
 
-SpectrogramProcessorFactory.register_processor('db', DecibelSpectrogramProcessor)
-SpectrogramProcessorFactory.register_processor('lin', LinearSpectrogramProcessor)
+# SpectrogramProcessorFactory.register_processor('db', DecibelSpectrogramProcessor)
+# SpectrogramProcessorFactory.register_processor('lin', LinearSpectrogramProcessor)
 SpectrogramProcessorFactory.register_processor('mel', MelSpectrogramProcessor)

@@ -1,0 +1,6 @@
+BALLROOM:
+	Average Binary Accuracy: 0.9466031566262245
+	Average Loss: 0.08899988234043121
+	Average Cemgil Accuracy: {'cemgil': 0.82}
+	Average Continuity Score: {'CMLc': 0.69, 'CMLt': 0.79, 'AMLc': 0.72, 'AMLt': 0.83}
+	Average F-Measure: {'precision': 0.86, 'recall': 0.9, 'f_score': 0.87}

@@ -21,6 +21,7 @@ class MelSpectrogramProcessor:
 
     def process(self, audio_path):
       try:
+
         # load audio file using librosa
         y, original_sr = librosa.load(audio_path)
 
@@ -40,6 +41,7 @@ class MelSpectrogramProcessor:
         spectrogram_transposed = spectrogram_db.T
 
         return spectrogram_transposed
+      
       except Exception as e:
         print("Exception occurred: ", e)
         return []

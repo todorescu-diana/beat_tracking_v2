@@ -17,6 +17,7 @@ class SpectrogramSequence(Sequence):
 
             track = tracks[key]
             spectrogram = pre_processor.process(track.audio_path)
+            
             if len(spectrogram):
                 self.spectrograms[key] = spectrogram
                 self.ids.append(key)

@@ -9,20 +9,19 @@ from utils.model_utils import build_model, compile_model, train_model
 import tensorflow as tf
 
 with tf.device('/GPU:0'):
-    # datasets - separate
-    dataset_name = VALID_DATASET_NAMES[3]
+    dataset_name = VALID_DATASET_NAMES[10]
 
-    replace_dots_with_underline, tiny_aam, harmonix_set = get_load_dataset_params(dataset_name)
+    replace_dots_with_underline, tiny_aam, harmonix_set, gtzan_rhythm = get_load_dataset_params(dataset_name)
     
-    spectrogram_processor_factory = SpectrogramProcessorFactory()
-    mel_preprocessor = spectrogram_processor_factory.create_spectrogram_processor('db')
-    mel_preprocessor = spectrogram_processor_factory.create_spectrogram_processor('log')
-    mel_preprocessor = spectrogram_processor_factory.create_spectrogram_processor('mel')
+    mel_preprocessor = SpectrogramProcessorFactory.create_spectrogram_processor('mel')
+
     pre_processor = mel_preprocessor
     pre_processor_type = pre_processor.spectrogram_type()
 
-    dataset_tracks = load_dataset(dataset_name, replace_dots_with_underline, tiny_aam, harmonix_set)
-    model_name = 'trained_' + dataset_name + '_v2_' + pre_processor_type
+    dataset_tracks = load_dataset(dataset_name, replace_dots_with_underline, tiny_aam, harmonix_set, gtzan_rhythm)
+    # model_name = 'trained_' + dataset_name + '_v2_' + pre_processor_type
+    model_name = "DE_STERS___"
+    # model_name = 'trained_' + dataset_name + '_rounded_to_3_decimals' + '_v2_' + pre_processor_type
 
     if dataset_tracks is not None:
         train_files, test_files = train_test_split(list(dataset_tracks.keys()), test_size=0.2, random_state=1234)

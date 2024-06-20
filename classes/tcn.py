@@ -31,7 +31,7 @@ def residual_block(x, i, activation, num_filters, kernel_size, padding, dropout_
     x = SpatialDropout1D(dropout_rate, name=name + '_spatial_dropout_%f' % dropout_rate)(x)
     # 1x1 conv. to obtain a representation with the same size as the residual
     x = Conv1D(num_filters, 1, padding='same', name=name + '_1x1_conv')(x)
-    # add the residual to the processed data and also return it as skip connection
+    # add the residual to the processed data
     return keras.layers.add([res_x, x], name=name + '_merge_residual')
 
 

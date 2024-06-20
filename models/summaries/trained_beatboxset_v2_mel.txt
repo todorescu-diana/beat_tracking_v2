@@ -1,0 +1,352 @@
+Model: "model"
+__________________________________________________________________________________________________
+ Layer (type)                   Output Shape         Param #     Connected to                     
+==================================================================================================
+ input_1 (InputLayer)           [(1, None, None, 1)  0           []                               
+                                ]                                                                 
+                                                                                                  
+ conv_1_conv (Conv2D)           (1, None, None, 20)  200         ['input_1[0][0]']                
+                                                                                                  
+ conv_1_activation (Activation)  (1, None, None, 20)  0          ['conv_1_conv[0][0]']            
+                                                                                                  
+ conv_1_max_pooling (MaxPooling  (1, None, None, 20)  0          ['conv_1_activation[0][0]']      
+ 2D)                                                                                              
+                                                                                                  
+ conv_1_dropout (Dropout)       (1, None, None, 20)  0           ['conv_1_max_pooling[0][0]']     
+                                                                                                  
+ conv_2_conv (Conv2D)           (1, None, None, 20)  3620        ['conv_1_dropout[0][0]']         
+                                                                                                  
+ conv_2_activation (Activation)  (1, None, None, 20)  0          ['conv_2_conv[0][0]']            
+                                                                                                  
+ conv_2_max_pooling (MaxPooling  (1, None, None, 20)  0          ['conv_2_activation[0][0]']      
+ 2D)                                                                                              
+                                                                                                  
+ conv_2_dropout (Dropout)       (1, None, None, 20)  0           ['conv_2_max_pooling[0][0]']     
+                                                                                                  
+ conv_3_conv (Conv2D)           (1, None, None, 20)  3220        ['conv_2_dropout[0][0]']         
+                                                                                                  
+ conv_3_activation (Activation)  (1, None, None, 20)  0          ['conv_3_conv[0][0]']            
+                                                                                                  
+ conv_3_dropout (Dropout)       (1, None, None, 20)  0           ['conv_3_activation[0][0]']      
+                                                                                                  
+ reshape (Reshape)              (1, None, 20)        0           ['conv_3_dropout[0][0]']         
+                                                                                                  
+ tcn_dilation_1_dilated_conv_1   (1, None, 20)       2020        ['reshape[0][0]']                
+ (Conv1D)                                                                                         
+                                                                                                  
+ tcn_dilation_1_dilated_conv_2   (1, None, 20)       2020        ['reshape[0][0]']                
+ (Conv1D)                                                                                         
+                                                                                                  
+ tcn_dilation_1_concat (Concate  (1, None, 40)       0           ['tcn_dilation_1_dilated_conv_1[0
+ nate)                                                           ][0]',                           
+                                                                  'tcn_dilation_1_dilated_conv_2[0
+                                                                 ][0]']                           
+                                                                                                  
+ tcn_dilation_1_activation (Act  (1, None, 40)       0           ['tcn_dilation_1_concat[0][0]']  
+ ivation)                                                                                         
+                                                                                                  
+ tcn_dilation_1_spatial_dropout  (1, None, 40)       0           ['tcn_dilation_1_activation[0][0]
+ _0.100000 (SpatialDropout1D)                                    ']                               
+                                                                                                  
+ tcn_dilation_1_1x1_conv_residu  (1, None, 20)       420         ['reshape[0][0]']                
+ al (Conv1D)                                                                                      
+                                                                                                  
+ tcn_dilation_1_1x1_conv (Conv1  (1, None, 20)       820         ['tcn_dilation_1_spatial_dropout_
+ D)                                                              0.100000[0][0]']                 
+                                                                                                  
+ tcn_dilation_1_merge_residual   (1, None, 20)       0           ['tcn_dilation_1_1x1_conv_residua
+ (Add)                                                           l[0][0]',                        
+                                                                  'tcn_dilation_1_1x1_conv[0][0]']
+                                                                                                  
+ tcn_dilation_2_dilated_conv_1   (1, None, 20)       2020        ['tcn_dilation_1_merge_residual[0
+ (Conv1D)                                                        ][0]']                           
+                                                                                                  
+ tcn_dilation_2_dilated_conv_2   (1, None, 20)       2020        ['tcn_dilation_1_merge_residual[0
+ (Conv1D)                                                        ][0]']                           
+                                                                                                  
+ tcn_dilation_2_concat (Concate  (1, None, 40)       0           ['tcn_dilation_2_dilated_conv_1[0
+ nate)                                                           ][0]',                           
+                                                                  'tcn_dilation_2_dilated_conv_2[0
+                                                                 ][0]']                           
+                                                                                                  
+ tcn_dilation_2_activation (Act  (1, None, 40)       0           ['tcn_dilation_2_concat[0][0]']  
+ ivation)                                                                                         
+                                                                                                  
+ tcn_dilation_2_spatial_dropout  (1, None, 40)       0           ['tcn_dilation_2_activation[0][0]
+ _0.100000 (SpatialDropout1D)                                    ']                               
+                                                                                                  
+ tcn_dilation_2_1x1_conv_residu  (1, None, 20)       420         ['tcn_dilation_1_merge_residual[0
+ al (Conv1D)                                                     ][0]']                           
+                                                                                                  
+ tcn_dilation_2_1x1_conv (Conv1  (1, None, 20)       820         ['tcn_dilation_2_spatial_dropout_
+ D)                                                              0.100000[0][0]']                 
+                                                                                                  
+ tcn_dilation_2_merge_residual   (1, None, 20)       0           ['tcn_dilation_2_1x1_conv_residua
+ (Add)                                                           l[0][0]',                        
+                                                                  'tcn_dilation_2_1x1_conv[0][0]']
+                                                                                                  
+ tcn_dilation_4_dilated_conv_1   (1, None, 20)       2020        ['tcn_dilation_2_merge_residual[0
+ (Conv1D)                                                        ][0]']                           
+                                                                                                  
+ tcn_dilation_4_dilated_conv_2   (1, None, 20)       2020        ['tcn_dilation_2_merge_residual[0
+ (Conv1D)                                                        ][0]']                           
+                                                                                                  
+ tcn_dilation_4_concat (Concate  (1, None, 40)       0           ['tcn_dilation_4_dilated_conv_1[0
+ nate)                                                           ][0]',                           
+                                                                  'tcn_dilation_4_dilated_conv_2[0
+                                                                 ][0]']                           
+                                                                                                  
+ tcn_dilation_4_activation (Act  (1, None, 40)       0           ['tcn_dilation_4_concat[0][0]']  
+ ivation)                                                                                         
+                                                                                                  
+ tcn_dilation_4_spatial_dropout  (1, None, 40)       0           ['tcn_dilation_4_activation[0][0]
+ _0.100000 (SpatialDropout1D)                                    ']                               
+                                                                                                  
+ tcn_dilation_4_1x1_conv_residu  (1, None, 20)       420         ['tcn_dilation_2_merge_residual[0
+ al (Conv1D)                                                     ][0]']                           
+                                                                                                  
+ tcn_dilation_4_1x1_conv (Conv1  (1, None, 20)       820         ['tcn_dilation_4_spatial_dropout_
+ D)                                                              0.100000[0][0]']                 
+                                                                                                  
+ tcn_dilation_4_merge_residual   (1, None, 20)       0           ['tcn_dilation_4_1x1_conv_residua
+ (Add)                                                           l[0][0]',                        
+                                                                  'tcn_dilation_4_1x1_conv[0][0]']
+                                                                                                  
+ tcn_dilation_8_dilated_conv_1   (1, None, 20)       2020        ['tcn_dilation_4_merge_residual[0
+ (Conv1D)                                                        ][0]']                           
+                                                                                                  
+ tcn_dilation_8_dilated_conv_2   (1, None, 20)       2020        ['tcn_dilation_4_merge_residual[0
+ (Conv1D)                                                        ][0]']                           
+                                                                                                  
+ tcn_dilation_8_concat (Concate  (1, None, 40)       0           ['tcn_dilation_8_dilated_conv_1[0
+ nate)                                                           ][0]',                           
+                                                                  'tcn_dilation_8_dilated_conv_2[0
+                                                                 ][0]']                           
+                                                                                                  
+ tcn_dilation_8_activation (Act  (1, None, 40)       0           ['tcn_dilation_8_concat[0][0]']  
+ ivation)                                                                                         
+                                                                                                  
+ tcn_dilation_8_spatial_dropout  (1, None, 40)       0           ['tcn_dilation_8_activation[0][0]
+ _0.100000 (SpatialDropout1D)                                    ']                               
+                                                                                                  
+ tcn_dilation_8_1x1_conv_residu  (1, None, 20)       420         ['tcn_dilation_4_merge_residual[0
+ al (Conv1D)                                                     ][0]']                           
+                                                                                                  
+ tcn_dilation_8_1x1_conv (Conv1  (1, None, 20)       820         ['tcn_dilation_8_spatial_dropout_
+ D)                                                              0.100000[0][0]']                 
+                                                                                                  
+ tcn_dilation_8_merge_residual   (1, None, 20)       0           ['tcn_dilation_8_1x1_conv_residua
+ (Add)                                                           l[0][0]',                        
+                                                                  'tcn_dilation_8_1x1_conv[0][0]']
+                                                                                                  
+ tcn_dilation_16_dilated_conv_1  (1, None, 20)       2020        ['tcn_dilation_8_merge_residual[0
+  (Conv1D)                                                       ][0]']                           
+                                                                                                  
+ tcn_dilation_16_dilated_conv_2  (1, None, 20)       2020        ['tcn_dilation_8_merge_residual[0
+  (Conv1D)                                                       ][0]']                           
+                                                                                                  
+ tcn_dilation_16_concat (Concat  (1, None, 40)       0           ['tcn_dilation_16_dilated_conv_1[
+ enate)                                                          0][0]',                          
+                                                                  'tcn_dilation_16_dilated_conv_2[
+                                                                 0][0]']                          
+                                                                                                  
+ tcn_dilation_16_activation (Ac  (1, None, 40)       0           ['tcn_dilation_16_concat[0][0]'] 
+ tivation)                                                                                        
+                                                                                                  
+ tcn_dilation_16_spatial_dropou  (1, None, 40)       0           ['tcn_dilation_16_activation[0][0
+ t_0.100000 (SpatialDropout1D)                                   ]']                              
+                                                                                                  
+ tcn_dilation_16_1x1_conv_resid  (1, None, 20)       420         ['tcn_dilation_8_merge_residual[0
+ ual (Conv1D)                                                    ][0]']                           
+                                                                                                  
+ tcn_dilation_16_1x1_conv (Conv  (1, None, 20)       820         ['tcn_dilation_16_spatial_dropout
+ 1D)                                                             _0.100000[0][0]']                
+                                                                                                  
+ tcn_dilation_16_merge_residual  (1, None, 20)       0           ['tcn_dilation_16_1x1_conv_residu
+  (Add)                                                          al[0][0]',                       
+                                                                  'tcn_dilation_16_1x1_conv[0][0]'
+                                                                 ]                                
+                                                                                                  
+ tcn_dilation_32_dilated_conv_1  (1, None, 20)       2020        ['tcn_dilation_16_merge_residual[
+  (Conv1D)                                                       0][0]']                          
+                                                                                                  
+ tcn_dilation_32_dilated_conv_2  (1, None, 20)       2020        ['tcn_dilation_16_merge_residual[
+  (Conv1D)                                                       0][0]']                          
+                                                                                                  
+ tcn_dilation_32_concat (Concat  (1, None, 40)       0           ['tcn_dilation_32_dilated_conv_1[
+ enate)                                                          0][0]',                          
+                                                                  'tcn_dilation_32_dilated_conv_2[
+                                                                 0][0]']                          
+                                                                                                  
+ tcn_dilation_32_activation (Ac  (1, None, 40)       0           ['tcn_dilation_32_concat[0][0]'] 
+ tivation)                                                                                        
+                                                                                                  
+ tcn_dilation_32_spatial_dropou  (1, None, 40)       0           ['tcn_dilation_32_activation[0][0
+ t_0.100000 (SpatialDropout1D)                                   ]']                              
+                                                                                                  
+ tcn_dilation_32_1x1_conv_resid  (1, None, 20)       420         ['tcn_dilation_16_merge_residual[
+ ual (Conv1D)                                                    0][0]']                          
+                                                                                                  
+ tcn_dilation_32_1x1_conv (Conv  (1, None, 20)       820         ['tcn_dilation_32_spatial_dropout
+ 1D)                                                             _0.100000[0][0]']                
+                                                                                                  
+ tcn_dilation_32_merge_residual  (1, None, 20)       0           ['tcn_dilation_32_1x1_conv_residu
+  (Add)                                                          al[0][0]',                       
+                                                                  'tcn_dilation_32_1x1_conv[0][0]'
+                                                                 ]                                
+                                                                                                  
+ tcn_dilation_64_dilated_conv_1  (1, None, 20)       2020        ['tcn_dilation_32_merge_residual[
+  (Conv1D)                                                       0][0]']                          
+                                                                                                  
+ tcn_dilation_64_dilated_conv_2  (1, None, 20)       2020        ['tcn_dilation_32_merge_residual[
+  (Conv1D)                                                       0][0]']                          
+                                                                                                  
+ tcn_dilation_64_concat (Concat  (1, None, 40)       0           ['tcn_dilation_64_dilated_conv_1[
+ enate)                                                          0][0]',                          
+                                                                  'tcn_dilation_64_dilated_conv_2[
+                                                                 0][0]']                          
+                                                                                                  
+ tcn_dilation_64_activation (Ac  (1, None, 40)       0           ['tcn_dilation_64_concat[0][0]'] 
+ tivation)                                                                                        
+                                                                                                  
+ tcn_dilation_64_spatial_dropou  (1, None, 40)       0           ['tcn_dilation_64_activation[0][0
+ t_0.100000 (SpatialDropout1D)                                   ]']                              
+                                                                                                  
+ tcn_dilation_64_1x1_conv_resid  (1, None, 20)       420         ['tcn_dilation_32_merge_residual[
+ ual (Conv1D)                                                    0][0]']                          
+                                                                                                  
+ tcn_dilation_64_1x1_conv (Conv  (1, None, 20)       820         ['tcn_dilation_64_spatial_dropout
+ 1D)                                                             _0.100000[0][0]']                
+                                                                                                  
+ tcn_dilation_64_merge_residual  (1, None, 20)       0           ['tcn_dilation_64_1x1_conv_residu
+  (Add)                                                          al[0][0]',                       
+                                                                  'tcn_dilation_64_1x1_conv[0][0]'
+                                                                 ]                                
+                                                                                                  
+ tcn_dilation_128_dilated_conv_  (1, None, 20)       2020        ['tcn_dilation_64_merge_residual[
+ 1 (Conv1D)                                                      0][0]']                          
+                                                                                                  
+ tcn_dilation_128_dilated_conv_  (1, None, 20)       2020        ['tcn_dilation_64_merge_residual[
+ 2 (Conv1D)                                                      0][0]']                          
+                                                                                                  
+ tcn_dilation_128_concat (Conca  (1, None, 40)       0           ['tcn_dilation_128_dilated_conv_1
+ tenate)                                                         [0][0]',                         
+                                                                  'tcn_dilation_128_dilated_conv_2
+                                                                 [0][0]']                         
+                                                                                                  
+ tcn_dilation_128_activation (A  (1, None, 40)       0           ['tcn_dilation_128_concat[0][0]']
+ ctivation)                                                                                       
+                                                                                                  
+ tcn_dilation_128_spatial_dropo  (1, None, 40)       0           ['tcn_dilation_128_activation[0][
+ ut_0.100000 (SpatialDropout1D)                                  0]']                             
+                                                                                                  
+ tcn_dilation_128_1x1_conv_resi  (1, None, 20)       420         ['tcn_dilation_64_merge_residual[
+ dual (Conv1D)                                                   0][0]']                          
+                                                                                                  
+ tcn_dilation_128_1x1_conv (Con  (1, None, 20)       820         ['tcn_dilation_128_spatial_dropou
+ v1D)                                                            t_0.100000[0][0]']               
+                                                                                                  
+ tcn_dilation_128_merge_residua  (1, None, 20)       0           ['tcn_dilation_128_1x1_conv_resid
+ l (Add)                                                         ual[0][0]',                      
+                                                                  'tcn_dilation_128_1x1_conv[0][0]
+                                                                 ']                               
+                                                                                                  
+ tcn_dilation_256_dilated_conv_  (1, None, 20)       2020        ['tcn_dilation_128_merge_residual
+ 1 (Conv1D)                                                      [0][0]']                         
+                                                                                                  
+ tcn_dilation_256_dilated_conv_  (1, None, 20)       2020        ['tcn_dilation_128_merge_residual
+ 2 (Conv1D)                                                      [0][0]']                         
+                                                                                                  
+ tcn_dilation_256_concat (Conca  (1, None, 40)       0           ['tcn_dilation_256_dilated_conv_1
+ tenate)                                                         [0][0]',                         
+                                                                  'tcn_dilation_256_dilated_conv_2
+                                                                 [0][0]']                         
+                                                                                                  
+ tcn_dilation_256_activation (A  (1, None, 40)       0           ['tcn_dilation_256_concat[0][0]']
+ ctivation)                                                                                       
+                                                                                                  
+ tcn_dilation_256_spatial_dropo  (1, None, 40)       0           ['tcn_dilation_256_activation[0][
+ ut_0.100000 (SpatialDropout1D)                                  0]']                             
+                                                                                                  
+ tcn_dilation_256_1x1_conv_resi  (1, None, 20)       420         ['tcn_dilation_128_merge_residual
+ dual (Conv1D)                                                   [0][0]']                         
+                                                                                                  
+ tcn_dilation_256_1x1_conv (Con  (1, None, 20)       820         ['tcn_dilation_256_spatial_dropou
+ v1D)                                                            t_0.100000[0][0]']               
+                                                                                                  
+ tcn_dilation_256_merge_residua  (1, None, 20)       0           ['tcn_dilation_256_1x1_conv_resid
+ l (Add)                                                         ual[0][0]',                      
+                                                                  'tcn_dilation_256_1x1_conv[0][0]
+                                                                 ']                               
+                                                                                                  
+ tcn_dilation_512_dilated_conv_  (1, None, 20)       2020        ['tcn_dilation_256_merge_residual
+ 1 (Conv1D)                                                      [0][0]']                         
+                                                                                                  
+ tcn_dilation_512_dilated_conv_  (1, None, 20)       2020        ['tcn_dilation_256_merge_residual
+ 2 (Conv1D)                                                      [0][0]']                         
+                                                                                                  
+ tcn_dilation_512_concat (Conca  (1, None, 40)       0           ['tcn_dilation_512_dilated_conv_1
+ tenate)                                                         [0][0]',                         
+                                                                  'tcn_dilation_512_dilated_conv_2
+                                                                 [0][0]']                         
+                                                                                                  
+ tcn_dilation_512_activation (A  (1, None, 40)       0           ['tcn_dilation_512_concat[0][0]']
+ ctivation)                                                                                       
+                                                                                                  
+ tcn_dilation_512_spatial_dropo  (1, None, 40)       0           ['tcn_dilation_512_activation[0][
+ ut_0.100000 (SpatialDropout1D)                                  0]']                             
+                                                                                                  
+ tcn_dilation_512_1x1_conv_resi  (1, None, 20)       420         ['tcn_dilation_256_merge_residual
+ dual (Conv1D)                                                   [0][0]']                         
+                                                                                                  
+ tcn_dilation_512_1x1_conv (Con  (1, None, 20)       820         ['tcn_dilation_512_spatial_dropou
+ v1D)                                                            t_0.100000[0][0]']               
+                                                                                                  
+ tcn_dilation_512_merge_residua  (1, None, 20)       0           ['tcn_dilation_512_1x1_conv_resid
+ l (Add)                                                         ual[0][0]',                      
+                                                                  'tcn_dilation_512_1x1_conv[0][0]
+                                                                 ']                               
+                                                                                                  
+ tcn_dilation_1024_dilated_conv  (1, None, 20)       2020        ['tcn_dilation_512_merge_residual
+ _1 (Conv1D)                                                     [0][0]']                         
+                                                                                                  
+ tcn_dilation_1024_dilated_conv  (1, None, 20)       2020        ['tcn_dilation_512_merge_residual
+ _2 (Conv1D)                                                     [0][0]']                         
+                                                                                                  
+ tcn_dilation_1024_concat (Conc  (1, None, 40)       0           ['tcn_dilation_1024_dilated_conv_
+ atenate)                                                        1[0][0]',                        
+                                                                  'tcn_dilation_1024_dilated_conv_
+                                                                 2[0][0]']                        
+                                                                                                  
+ tcn_dilation_1024_activation (  (1, None, 40)       0           ['tcn_dilation_1024_concat[0][0]'
+ Activation)                                                     ]                                
+                                                                                                  
+ tcn_dilation_1024_spatial_drop  (1, None, 40)       0           ['tcn_dilation_1024_activation[0]
+ out_0.100000 (SpatialDropout1D                                  [0]']                            
+ )                                                                                                
+                                                                                                  
+ tcn_dilation_1024_1x1_conv_res  (1, None, 20)       420         ['tcn_dilation_512_merge_residual
+ idual (Conv1D)                                                  [0][0]']                         
+                                                                                                  
+ tcn_dilation_1024_1x1_conv (Co  (1, None, 20)       820         ['tcn_dilation_1024_spatial_dropo
+ nv1D)                                                           ut_0.100000[0][0]']              
+                                                                                                  
+ tcn_dilation_1024_merge_residu  (1, None, 20)       0           ['tcn_dilation_1024_1x1_conv_resi
+ al (Add)                                                        dual[0][0]',                     
+                                                                  'tcn_dilation_1024_1x1_conv[0][0
+                                                                 ]']                              
+                                                                                                  
+ tcn_activation (Activation)    (1, None, 20)        0           ['tcn_dilation_1024_merge_residua
+                                                                 l[0][0]']                        
+                                                                                                  
+ beats_dropout (Dropout)        (1, None, 20)        0           ['tcn_activation[0][0]']         
+                                                                                                  
+ dense (Dense)                  (1, None, 1)         21          ['beats_dropout[0][0]']          
+                                                                                                  
+ beats (Activation)             (1, None, 1)         0           ['dense[0][0]']                  
+                                                                                                  
+==================================================================================================
+Total params: 65,141
+Trainable params: 65,141
+Non-trainable params: 0
+__________________________________________________________________________________________________

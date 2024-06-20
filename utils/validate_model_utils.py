@@ -1,5 +1,6 @@
 import numpy as np
 from sklearn.model_selection import KFold
+import tensorflow as tf
 from classes.sequences.data_sequence import DataSequence
 from classes.sequences.spectrogram_sequence import SpectrogramSequence
 from classes.spectrograms.SpectrogramProcessorFactory import SpectrogramProcessorFactory
@@ -116,6 +117,9 @@ def k_fold_cross_validation(dataset_tracks, n_splits=NUM_FOLDS, epochs=NUM_EPOCH
                 continuity_scores.append(continuity_dataset_mean)
                 f_measure_scores.append(f_measure_dataset_mean)
 
+                # clear the Keras session to release GPU memory
+                tf.keras.backend.clear_session()
+
             # calculate average evaluation metrics
             avg_accuracy = np.mean(accuracy_scores)
             avg_loss = np.mean(loss_scores)
@@ -149,7 +153,7 @@ def k_fold_cross_validation(dataset_tracks, n_splits=NUM_FOLDS, epochs=NUM_EPOCH
                                 sum_f_measure[key] = value
                         mean_f_measure = {key: round(sum_value / count, 2) for key, sum_value in sum_f_measure.items()}
 
-                    with open(results_dir_path + "/" + dataset_name.upper() + ".txt", "w") as file:
+                    with open(results_dir_path + "/" + dataset_name.upper() + "_mel" + ".txt", "w") as file:
                         file.write(f"{dataset_name.upper()}:\n")
                         file.write(f"\tAverage Binary Accuracy: {avg_accuracy}\n")
                         file.write(f"\tAverage Loss: {avg_loss}\n")
