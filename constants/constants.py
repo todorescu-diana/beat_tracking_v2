@@ -58,6 +58,10 @@ DATASET_PATHS = {
         "audio_dir": '',
         "annot_dir": ''
     },
+    VALID_DATASET_NAMES[2]: {
+        "audio_dir": '',
+        "annot_dir": ''
+    },
     VALID_DATASET_NAMES[3]: {
         "audio_dir": '',
         "annot_dir": ''
@@ -83,10 +87,6 @@ DATASET_PATHS = {
         "annot_dir": ''
     },
     VALID_DATASET_NAMES[9]: {
-        "audio_dir": '',
-        "annot_dir": ''
-    },
-    VALID_DATASET_NAMES[10]: {
         "audio_dir": '',
         "annot_dir": ''
     }
