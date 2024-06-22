@@ -23,5 +23,5 @@ plt.title('Spectrogram')
 plt.ylabel('Frequency [Hz]')
 plt.xlabel('Time [s]')
 existing_ticks = plt.gca().get_yticks()  # Get current x-axis ticks
-# plt.yticks(np.unique(np.concatenate([existing_ticks, [50]])))  # Concatenate existing ticks with custom ticks
+# plt.yticks(np.unique(np.concatenate([existing_ticks, [50]])))  # concatenate existing ticks with custom ticks
 plt.show()

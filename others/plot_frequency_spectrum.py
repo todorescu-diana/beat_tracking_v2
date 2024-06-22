@@ -1,21 +1,17 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Parameters
-fs = 8000  # Sampling frequency (samples per second)
-T = 0.3     # Duration (seconds)
-t = np.arange(0, T, 1/fs)  # Time vector
+fs = 8000
+T = 0.3
+t = np.arange(0, T, 1/fs)
 
-# Generate signals
-f1 = 10  # Frequency of first sine wave (Hz)
-f2 = 50  # Frequency of second sine wave (Hz)
+f1 = 10 
+f2 = 50 
 y1 = np.sin(2 * np.pi * f1 * t)
 y2 = np.sin(2 * np.pi * f2 * t)
 
-# Calculate sum of signals
 y_sum = y1 + y2
 
-# Plot time-domain signals
 plt.figure(figsize=(12, 6))
 
 plt.subplot(2, 1, 1)
@@ -28,10 +24,9 @@ plt.ylabel('amplitude')
 plt.legend()
 plt.grid()
 
-# Calculate and plot spectrum of the summed signal
 plt.subplot(2, 1, 2)
-freqs = np.fft.fftfreq(len(t), 1/fs)  # Frequency bins
-Y_sum = np.fft.fft(y_sum) / len(t)   # FFT and normalize
+freqs = np.fft.fftfreq(len(t), 1/fs) 
+Y_sum = np.fft.fft(y_sum) / len(t) 
 
 plt.plot(freqs[:len(t) // 2], np.abs(Y_sum[:len(t) // 2]) , color='navy')
 

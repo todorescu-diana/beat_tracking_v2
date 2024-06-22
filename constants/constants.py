@@ -47,7 +47,7 @@ NUM_FOLDS = 8
 # train
 NUM_EPOCHS = 100
 
-VALID_DATASET_NAMES = ['ballroom', 'smc', 'gtzan', 'dagstuhl_choir', 'beatboxset', 'guitarset_mic', 'guitarset_pickup', 'tiny_aam', 'harmonix_set', 'gtzan_rhythm', 'aam']
+VALID_DATASET_NAMES = ['ballroom', 'smc', 'dagstuhl_choir', 'beatboxset', 'guitarset_mic', 'guitarset_pickup', 'tiny_aam', 'harmonix_set', 'gtzan_rhythm', 'aam']
 
 DATASET_PATHS = {
     VALID_DATASET_NAMES[0]: {
@@ -55,10 +55,6 @@ DATASET_PATHS = {
         "annot_dir": ''
     },
     VALID_DATASET_NAMES[1]: {
-        "audio_dir": '',
-        "annot_dir": ''
-    },
-    VALID_DATASET_NAMES[2]: {
         "audio_dir": '',
         "annot_dir": ''
     },

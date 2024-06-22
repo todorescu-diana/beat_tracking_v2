@@ -70,16 +70,13 @@ class CemgilEvaluationHelper(EvaluationHelperBase):
             max_x = beat + 6 * self.tolerance_ms / 1000
 
             plt.xlim(left=0, right=max_x)
-            plt.fill_between(tolerance_window_x_linspace, tolerance_window_y_linspace, color='forestgreen', alpha=0.3)
 
-        # Create custom legend entries
         legend_handles = [
             Line2D([0], [0], color='black', linestyle='--', linewidth=1),
-            Line2D([0], [0], color='black', linestyle='-', linewidth=2),
-            Line2D([0], [0], color='forestgreen', linestyle='-', linewidth=0, marker='s', alpha=0.3, markersize=10),
+            Line2D([0], [0], color='black', linestyle='-', linewidth=2)
         ]
-        legend_labels = ['Ground Truth Beats', 'Predictions', 'Tolerance Window (40ms)', ]
-        plt.title('Predicted Beats and Ground Truth Beats with Cemgil Tolerance Window')
+        legend_labels = ['ground truth beats', 'predictions']
+        plt.title('predicted beats and ground truth beats with Cemgil tolerance window')
 
         for index, x in enumerate(predicted_beats):
             if index != 0:
@@ -90,8 +87,8 @@ class CemgilEvaluationHelper(EvaluationHelperBase):
 
         legend = plt.legend(legend_handles, legend_labels, loc='upper right')
         plt.gca().add_artist(legend)
-        plt.xlabel('Time (s)')
+        plt.xlabel('time [s]')
         plt.ylabel('Weight')
-        plt.title('Predicted Beats and Ground Truth Beats with Cemgil Tolerance Window')
+        plt.title('predicted beats and ground truth beats with Cemgil tolerance window')
 
-        plt.show()
+        plt.savefig('figure_plots/cemgil.png')

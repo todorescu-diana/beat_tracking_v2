@@ -66,21 +66,19 @@ class FMeasureEvaluationHelper(EvaluationHelperBase):
 
         for beat in ground_truth_beats:
             plt.fill_betweenx(y=[0, 2], x1=beat - self.tolerance_ms / 1000, x2=beat + self.tolerance_ms / 1000,
-                              color='forestgreen',
-                              alpha=0.3)
+                              color='gray', alpha=0.25)
 
         legend_handles = [
             Line2D([0], [0], color='black', linestyle='--', linewidth=1),
             Line2D([0], [0], color='black', linestyle='-', linewidth=2),
-            Line2D([0], [0], color='forestgreen', linestyle='-', linewidth=0, marker='s', alpha=0.3, markersize=10),
+            Line2D([0], [0], color='gray', linestyle='-', linewidth=0, marker='s', alpha=0.25, markersize=10),
         ]
-        legend_labels = ['Ground Truth Beats', 'Predictions', 'Tolerance Window (70ms)', ]
-        plt.title('Predicted Beats and Ground Truth Beats with Cemgil Tolerance Window')
+        legend_labels = ['ground truth beats', 'predictions', 'tolerance window (70ms)', ]
+        plt.title('predicted beats and ground truth beats with F-Measure tolerance window')
 
         legend = plt.legend(legend_handles, legend_labels, loc='upper right')
         plt.gca().add_artist(legend)
-        plt.xlabel('Time (s)')
+        plt.xlabel('time [s]')
         plt.yticks([])
-        plt.title('Predicted Beats and Ground Truth Beats with Tolerance Window')
 
-        plt.show()
+        plt.savefig('figure_plots/f_measure.png')

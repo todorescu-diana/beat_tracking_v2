@@ -4,7 +4,7 @@ import tensorflow as tf
 from classes.sequences.data_sequence import DataSequence
 from classes.sequences.spectrogram_sequence import SpectrogramSequence
 from classes.spectrograms.SpectrogramProcessorFactory import SpectrogramProcessorFactory
-from constants.constants import MODEL_SAVE_PATH, NUM_FOLDS, PAD_FRAMES, NUM_EPOCHS, PLOT_SAVE_PATH
+from constants.constants import NUM_FOLDS, PAD_FRAMES, NUM_EPOCHS
 from evaluation.classes.EvaluationHelperFactory import EvaluationHelperFactory
 from utils.model_utils import build_model, compile_model, predict
 from keras.callbacks import ReduceLROnPlateau, EarlyStopping
