@@ -1,0 +1,4 @@
+aam_gtzan_rhythm_ballroom___SMC:
+	Average Cemgil Accuracy: {'cemgil': 0.38}
+	Average Continuity Score: {'CMLc': 0.12, 'CMLt': 0.23, 'AMLc': 0.18, 'AMLt': 0.33}
+	Average F-Measure: {'precision': 0.46, 'recall': 0.55, 'f_score': 0.48}

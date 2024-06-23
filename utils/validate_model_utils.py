@@ -8,6 +8,7 @@ from constants.constants import NUM_FOLDS, PAD_FRAMES, NUM_EPOCHS
 from evaluation.classes.EvaluationHelperFactory import EvaluationHelperFactory
 from utils.model_utils import build_model, compile_model, predict
 from keras.callbacks import ReduceLROnPlateau, EarlyStopping
+from keras.models import load_model
 
 
 def k_fold_cross_validation(dataset_tracks, n_splits=NUM_FOLDS, epochs=NUM_EPOCHS, dataset_name='', results_dir_path=''):
@@ -160,4 +161,40 @@ def k_fold_cross_validation(dataset_tracks, n_splits=NUM_FOLDS, epochs=NUM_EPOCH
                         file.write(f"\tAverage Cemgil Accuracy: {mean_cemgil}\n")
                         file.write(f"\tAverage Continuity Score: {mean_continuity}\n")
                         file.write(f"\tAverage F-Measure: {mean_f_measure}\n")
+
+def validate(model_name, test_tracks, epochs=NUM_EPOCHS, test_dataset_name='', results_dir_path=''):
+    spectrogram_processor_factory = SpectrogramProcessorFactory()
+    mel_preprocessor = spectrogram_processor_factory.create_spectrogram_processor('mel')
+    pre_processor = mel_preprocessor
+
+    cemgil_helper = EvaluationHelperFactory.create_evaluation_helper('cemgil')
+    continuity_helper = EvaluationHelperFactory.create_evaluation_helper('continuity')
+    f_measure_helper = EvaluationHelperFactory.create_evaluation_helper('f_measure')
+    model_path = f'models/saved/trained_{model_name}FULL_v2_mel_best.h5'
+
+    model = load_model(model_path)
+
+    spectrogram_test_sequence = SpectrogramSequence(
+        tracks={k: v for k, v in test_tracks.items()},
+        pre_processor=pre_processor,
+        pad_frames=2
+    )
+
+    total_valid_dataset_tracks = len(spectrogram_test_sequence)
+
+    # predict for metrics
+    _, detections = predict(model, spectrogram_test_sequence)
+    beat_detections = detections
+    beat_annotations = {k: {'beats': v.beats.times} for k, v in test_tracks.items() if v.beats is not None}
+
+    # calculate remaining / extra metrics
+    cemgil_dataset_mean = cemgil_helper.calculate_mean_metric(beat_detections, beat_annotations)
+    continuity_dataset_mean = continuity_helper.calculate_mean_metric(beat_detections, beat_annotations)
+    f_measure_dataset_mean = f_measure_helper.calculate_mean_metric(beat_detections, beat_annotations)
+
+    with open(results_dir_path + "/" + model_name + '___' + test_dataset_name.upper() + "_mel_VALIDATION" + ".txt", "w") as file:
+            file.write(f"{model_name}___{test_dataset_name.upper()}:\n")
+            file.write(f"\tAverage Cemgil Accuracy: {cemgil_dataset_mean}\n")
+            file.write(f"\tAverage Continuity Score: {continuity_dataset_mean}\n")
+            file.write(f"\tAverage F-Measure: {f_measure_dataset_mean}\n")
 

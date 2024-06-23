@@ -1,0 +1,4 @@
+gtzan_rhythm___SMC:
+	Average Cemgil Accuracy: {'cemgil': 0.36}
+	Average Continuity Score: {'CMLc': 0.12, 'CMLt': 0.22, 'AMLc': 0.18, 'AMLt': 0.33}
+	Average F-Measure: {'precision': 0.44, 'recall': 0.54, 'f_score': 0.47}

@@ -1,0 +1,4 @@
+aam___SMC:
+	Average Cemgil Accuracy: {'cemgil': 0.33}
+	Average Continuity Score: {'CMLc': 0.07, 'CMLt': 0.13, 'AMLc': 0.13, 'AMLt': 0.25}
+	Average F-Measure: {'precision': 0.37, 'recall': 0.52, 'f_score': 0.42}

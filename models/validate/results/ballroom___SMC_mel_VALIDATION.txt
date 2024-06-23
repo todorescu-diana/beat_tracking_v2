@@ -1,0 +1,4 @@
+ballroom___SMC:
+	Average Cemgil Accuracy: {'cemgil': 0.33}
+	Average Continuity Score: {'CMLc': 0.08, 'CMLt': 0.16, 'AMLc': 0.14, 'AMLt': 0.25}
+	Average F-Measure: {'precision': 0.39, 'recall': 0.48, 'f_score': 0.41}
